@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import BookService from '../services/BookService'
+import * as Icon from 'react-bootstrap-icons';
 
 class ListBookComponent extends Component {
     constructor(props) {

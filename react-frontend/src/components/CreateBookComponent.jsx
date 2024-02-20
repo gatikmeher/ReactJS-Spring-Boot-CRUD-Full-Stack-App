@@ -77,38 +77,37 @@ class CreateBookComponent extends Component {
     render() {
         return (
             <div>
-                <br></br>
-                <div className="container">
-                    <div className="row">
-                        <div className="card col-md-6 offset-md-3 offset-md-3">
-                            {
-                                this.getTitle()
-                            }
-                            <div className="card-body">
-                                <form>
-                                    <div className="form-group">
-                                        <label> Title: </label>
-                                        <input placeholder="Title" name="firstName" className="form-control"
-                                            value={this.state.title} onChange={this.changeTitleHandler} />
-                                    </div>
-                                    <div className="form-group">
-                                        <label> Author: </label>
-                                        <input placeholder="Author" name="lastName" className="form-control"
-                                            value={this.state.author} onChange={this.changeAuthorHandler} />
-                                    </div>
-                                    <div className="form-group">
-                                        <label> Synopsis: </label>
-                                        <input placeholder="Synopsis" name="emailId" className="form-control"
-                                            value={this.state.synopsis} onChange={this.changeSynopsisHandler} />
-                                    </div>
+                <h2 className="text-center">{
+                    this.getTitle()
+                }</h2>
 
-                                    <button className="btn btn-success" onClick={this.saveOrUpdateBook}>Save</button>
-                                    <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{ marginLeft: "10px" }}>Cancel</button>
-                                </form>
-                            </div>
+                <br></br>
+                <div className="row">
+                    <div className="col-md-12 offset-md-12 offset-md-12">
+
+                        <div className="card-body">
+                            <form>
+                                <div className="form-group">
+                                    <label> Title: </label>
+                                    <input placeholder="Title" name="title" className="form-control"
+                                        value={this.state.title} onChange={this.changeTitleHandler} required="required" />
+                                </div>
+                                <div className="form-group">
+                                    <label> Author: </label>
+                                    <input placeholder="Author" name="author" className="form-control"
+                                        value={this.state.author} onChange={this.changeAuthorHandler} />
+                                </div>
+                                <div className="form-group">
+                                    <label> Synopsis: </label>
+                                    <textarea placeholder="Synopsis" name="synopsis" className="form-control"
+                                        value={this.state.synopsis} onChange={this.changeSynopsisHandler} />
+                                </div>
+
+                                <button className="btn btn-success" onClick={this.saveOrUpdateBook}>Save</button>
+                                <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{ marginLeft: "10px" }}>Cancel</button>
+                            </form>
                         </div>
                     </div>
-
                 </div>
             </div>
         )
