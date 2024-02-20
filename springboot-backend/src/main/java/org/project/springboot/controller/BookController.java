@@ -6,7 +6,11 @@ import java.util.Map;
 
 import org.project.springboot.exception.ResourceNotFoundException;
 import org.project.springboot.repository.BookRepository;
+import org.project.springboot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,11 +31,15 @@ public class BookController {
 
 	@Autowired
 	private BookRepository bookRepository;
+
+    @Autowired
+    private BookService bookService;
 	
 	// get all books
 	@GetMapping("/books")
 	public List<Book> getAllBooks(){
-		return bookRepository.findAll();
+        Pageable pageable  = PageRequest.of(10, 20);
+		return bookService.findAllBook(pageable);
 	}		
 	
 	// create book rest api
