@@ -12,8 +12,8 @@ class CreateBookComponent extends Component {
             lastName: '',
             emailId: ''
         }
-        this.changeFirstNameHandler = this.changeFirstNameHandler.bind(this);
-        this.changeLastNameHandler = this.changeLastNameHandler.bind(this);
+        this.changeTitleHandler = this.changeTitleHandler.bind(this);
+        this.changeAuthorHandler = this.changeAuthorHandler.bind(this);
         this.saveOrUpdateBook = this.saveOrUpdateBook.bind(this);
     }
 
@@ -27,9 +27,9 @@ class CreateBookComponent extends Component {
             BookService.getBookById(this.state.id).then((res) => {
                 let book = res.data;
                 this.setState({
-                    firstName: book.firstName,
-                    lastName: book.lastName,
-                    emailId: book.emailId
+                    firstName: book.title,
+                    lastName: book.author,
+                    emailId: book.synopsis
                 });
             });
         }
@@ -51,15 +51,15 @@ class CreateBookComponent extends Component {
         }
     }
 
-    changeFirstNameHandler = (event) => {
+    changeTitleHandler = (event) => {
         this.setState({ firstName: event.target.value });
     }
 
-    changeLastNameHandler = (event) => {
+    changeAuthorHandler = (event) => {
         this.setState({ lastName: event.target.value });
     }
 
-    changeEmailHandler = (event) => {
+    changeSynopsisHandler = (event) => {
         this.setState({ emailId: event.target.value });
     }
 
@@ -87,19 +87,19 @@ class CreateBookComponent extends Component {
                             <div className="card-body">
                                 <form>
                                     <div className="form-group">
-                                        <label> First Name: </label>
-                                        <input placeholder="First Name" name="firstName" className="form-control"
-                                            value={this.state.firstName} onChange={this.changeFirstNameHandler} />
+                                        <label> Title: </label>
+                                        <input placeholder="Title" name="firstName" className="form-control"
+                                            value={this.state.title} onChange={this.changeTitleHandler} />
                                     </div>
                                     <div className="form-group">
-                                        <label> Last Name: </label>
-                                        <input placeholder="Last Name" name="lastName" className="form-control"
-                                            value={this.state.lastName} onChange={this.changeLastNameHandler} />
+                                        <label> Author: </label>
+                                        <input placeholder="Author" name="lastName" className="form-control"
+                                            value={this.state.author} onChange={this.changeAuthorHandler} />
                                     </div>
                                     <div className="form-group">
-                                        <label> Email Id: </label>
-                                        <input placeholder="Email Address" name="emailId" className="form-control"
-                                            value={this.state.emailId} onChange={this.changeEmailHandler} />
+                                        <label> Synopsis: </label>
+                                        <input placeholder="Synopsis" name="emailId" className="form-control"
+                                            value={this.state.synopsis} onChange={this.changeSynopsisHandler} />
                                     </div>
 
                                     <button className="btn btn-success" onClick={this.saveOrUpdateBook}>Save</button>

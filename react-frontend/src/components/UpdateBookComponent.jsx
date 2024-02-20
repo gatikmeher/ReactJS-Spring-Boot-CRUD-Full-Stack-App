@@ -7,12 +7,12 @@ class UpdateBookComponent extends Component {
 
         this.state = {
             id: this.props.match.params.id,
-            firstName: '',
-            lastName: '',
-            emailId: ''
+            title: '',
+            author: '',
+            synopsis: ''
         }
-        this.changeFirstNameHandler = this.changeFirstNameHandler.bind(this);
-        this.changeLastNameHandler = this.changeLastNameHandler.bind(this);
+        this.changeTitleHandler = this.changeTitleHandler.bind(this);
+        this.changeAuthorHandler = this.changeAuthorHandler.bind(this);
         this.updateBook = this.updateBook.bind(this);
     }
 
@@ -20,16 +20,16 @@ class UpdateBookComponent extends Component {
         BookService.getBookById(this.state.id).then((res) => {
             let book = res.data;
             this.setState({
-                firstName: book.firstName,
-                lastName: book.lastName,
-                emailId: book.emailId
+                title: book.title,
+                author: book.author,
+                synopsis: book.synopsis
             });
         });
     }
 
     updateBook = (e) => {
         e.preventDefault();
-        let book = { firstName: this.state.firstName, lastName: this.state.lastName, emailId: this.state.emailId };
+        let book = { title: this.state.title, author: this.state.author, synopsis: this.state.synopsis };
         console.log('book => ' + JSON.stringify(book));
         console.log('id => ' + JSON.stringify(this.state.id));
         BookService.updateBook(book, this.state.id).then(res => {
@@ -37,16 +37,16 @@ class UpdateBookComponent extends Component {
         });
     }
 
-    changeFirstNameHandler = (event) => {
-        this.setState({ firstName: event.target.value });
+    changeTitleHandler = (event) => {
+        this.setState({ title: event.target.value });
     }
 
-    changeLastNameHandler = (event) => {
-        this.setState({ lastName: event.target.value });
+    changeAuthorHandler = (event) => {
+        this.setState({ author: event.target.value });
     }
 
-    changeEmailHandler = (event) => {
-        this.setState({ emailId: event.target.value });
+    changeSynopsisHandler = (event) => {
+        this.setState({ synopsis: event.target.value });
     }
 
     cancel() {
@@ -64,19 +64,19 @@ class UpdateBookComponent extends Component {
                             <div className="card-body">
                                 <form>
                                     <div className="form-group">
-                                        <label> First Name: </label>
-                                        <input placeholder="First Name" name="firstName" className="form-control"
-                                            value={this.state.firstName} onChange={this.changeFirstNameHandler} />
+                                        <label> Title: </label>
+                                        <input placeholder="Title" name="title" className="form-control"
+                                            value={this.state.title} onChange={this.changetitleHandler} />
                                     </div>
                                     <div className="form-group">
-                                        <label> Last Name: </label>
-                                        <input placeholder="Last Name" name="lastName" className="form-control"
-                                            value={this.state.lastName} onChange={this.changeLastNameHandler} />
+                                        <label> Author: </label>
+                                        <input placeholder="Author" name="author" className="form-control"
+                                            value={this.state.author} onChange={this.changeAuthorHandler} />
                                     </div>
                                     <div className="form-group">
-                                        <label> Email Id: </label>
-                                        <input placeholder="Email Address" name="emailId" className="form-control"
-                                            value={this.state.emailId} onChange={this.changeEmailHandler} />
+                                        <label> Synopsis: </label>
+                                        <input placeholder="Email Address" name="synopsis" className="form-control"
+                                            value={this.state.synopsis} onChange={this.changeSynopsisHandler} />
                                     </div>
 
                                     <button className="btn btn-success" onClick={this.updateBook}>Save</button>

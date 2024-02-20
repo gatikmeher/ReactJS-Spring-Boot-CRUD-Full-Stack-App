@@ -5,15 +5,15 @@ class FooterComponent extends Component {
         super(props)
 
         this.state = {
-                 
+
         }
     }
 
     render() {
         return (
             <div>
-                <footer className = "footer">
-                    <span className="text-muted">All Rights Reserved 2020 @JavaGuides</span>
+                <footer className="footer">
+                    <span className="text-muted">All Rights Reserved</span>
                 </footer>
             </div>
         )

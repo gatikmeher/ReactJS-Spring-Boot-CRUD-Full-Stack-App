@@ -48,9 +48,9 @@ class ListBookComponent extends Component {
 
                         <thead>
                             <tr>
-                                <th> Book First Name</th>
-                                <th> Book Last Name</th>
-                                <th> Book Email Id</th>
+                                <th> Title</th>
+                                <th> Author</th>
+                                <th> Synopsis</th>
                                 <th> Actions</th>
                             </tr>
                         </thead>
@@ -59,9 +59,9 @@ class ListBookComponent extends Component {
                                 this.state.books.map(
                                     book =>
                                         <tr key={book.id}>
-                                            <td> {book.firstName} </td>
-                                            <td> {book.lastName}</td>
-                                            <td> {book.emailId}</td>
+                                            <td> {book.title} </td>
+                                            <td> {book.author}</td>
+                                            <td> {book.synopsis}</td>
                                             <td>
                                                 <button onClick={() => this.editBook(book.id)} className="btn btn-info">Update </button>
                                                 <button style={{ marginLeft: "10px" }} onClick={() => this.deleteBook(book.id)} className="btn btn-danger">Delete </button>
@@ -72,9 +72,7 @@ class ListBookComponent extends Component {
                             }
                         </tbody>
                     </table>
-
                 </div>
-
             </div>
         )
     }

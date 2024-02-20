@@ -23,7 +23,7 @@ function App() {
             {/* <Route path = "/update-book/:id" component = {UpdateBookComponent}></Route> */}
           </Switch>
         </div>
-        <FooterComponent />
+        {/* <FooterComponent /> */}
       </Router>
     </div>
 
