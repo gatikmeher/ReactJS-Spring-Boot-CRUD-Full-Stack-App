@@ -12,15 +12,7 @@ import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import org.project.springboot.model.Book;
 
@@ -37,8 +29,11 @@ public class BookController {
 	
 	// get all books
 	@GetMapping("/books")
-	public List<Book> getAllBooks(){
-        Pageable pageable  = PageRequest.of(10, 20);
+	public List<Book> getAllBooks(@RequestParam(required = false, name = "page") Integer page,
+								  @RequestParam(required = false, name = "size") Integer size,
+								  @RequestParam(required = false, name = "q") String q){
+
+        Pageable pageable  = PageRequest.of(page.intValue(), size.intValue() < 1 ? 20 : size.intValue());
 		return bookService.findAllBook(pageable);
 	}		
 	
