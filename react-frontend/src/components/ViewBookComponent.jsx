@@ -31,19 +31,30 @@ class ViewBookComponent extends Component {
                  </div>
                  <br></br>
                 <div className = "card col-md-12 offset-md-12">
-                    <h3 className = "text-center"> View Book Details</h3>
                     <div className = "card-body">
                         <div className = "row">
-                            <label> <b>Book Name: </b> &nbsp;</label>
-                            <div> { this.state.book.name }</div>
+                            <label> <b>Title: </b> &nbsp;</label>
+                            <div> { this.state.book.title }</div>
                         </div>
                         <div className = "row">
-                            <label> <b> Book Description: </b>&nbsp;</label>
-                            <div> { this.state.book.description }</div>
-                        </div>
-                        <div className = "row">
-                            <label> <b>Book Author: </b>&nbsp;</label>
+                            <label> <b> Author: </b>&nbsp;</label>
                             <div> { this.state.book.author }</div>
+                        </div>
+                        <div className = "row">
+                            <label> <b>Date: </b>&nbsp;</label>
+                            <div> { this.state.book.date }</div>
+                        </div>
+                        <div className = "row">
+                            <label> <b>Genres: </b>&nbsp;</label>
+                            <div> { this.state.book.genres }</div>
+                        </div>
+                        <div className = "row">
+                            <label> <b>Characters: </b>&nbsp;</label>
+                            <div> { this.state.book.characters }</div>
+                        </div>
+                        <div className = "row">
+                            <label> <b>Synopsis: </b>&nbsp;</label>
+                            <div> { this.state.book.synopsis }</div>
                         </div>
                     </div>
 

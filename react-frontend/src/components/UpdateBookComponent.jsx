@@ -7,28 +7,36 @@ class UpdateBookComponent extends Component {
 
         this.state = {
             id: this.props.match.params.id,
-            name: '',
-            description: '',
-            author: ''
+            title: '',
+            author: '',
+            date: '',
+            genres: '',
+            characters: '',
+            synopsis: '',
         }
-        this.changeNameHandler = this.changeNameHandler.bind(this);
-        this.changeDescriptionHandler = this.changeDescriptionHandler.bind(this);
+        this.changeTitleHandler = this.changeTitleHandler.bind(this);
+        this.changeAuthorHandler = this.changeAuthorHandler.bind(this);
         this.updateBook = this.updateBook.bind(this);
     }
 
     componentDidMount(){
         BookService.getBookById(this.state.id).then( (res) =>{
             let book = res.data;
-            this.setState({name: book.name,
-                description: book.description,
-                author : book.author
+            console.log(book);
+            this.setState({title: book.title,
+                date: book.date,
+                genres: book.genres,
+                author : book.author,
+                characters: book.characters,
+                synopsis: book.synopsis
             });
         });
     }
 
     updateBook = (e) => {
         e.preventDefault();
-        let book = {name: this.state.name, description: this.state.description, author: this.state.author};
+        let book = {title: this.state.title, date: this.state.date, author: this.state.author, 
+            genres: this.state.genres, characters: this.state.characters, synopsis: this.state.synopsis};
         console.log('book => ' + JSON.stringify(book));
         console.log('id => ' + JSON.stringify(this.state.id));
         BookService.updateBook(book, this.state.id).then( res => {
@@ -36,25 +44,39 @@ class UpdateBookComponent extends Component {
         });
     }
     
-    changeNameHandler= (event) => {
+    changeTitleHandler= (event) => {
         this.setState({name: event.target.value});
     }
 
-    changeDescriptionHandler= (event) => {
+    changeAuthorHandler= (event) => {
         this.setState({description: event.target.value});
     }
 
-    changeAuthorHandler= (event) => {
+    changeDateHandler= (event) => {
         this.setState({author: event.target.value});
+    }
+
+    changeGenresHandler= (event) => {
+        this.setState({description: event.target.value});
+    }
+
+    changecharactersHandler= (event) => {
+        this.setState({description: event.target.value});
+    }
+
+    changeSynopsisHandler= (event) => {
+        this.setState({description: event.target.value});
     }
 
     cancel(){
         this.props.history.push('/books');
     }
 
+
     render() {
         return (
             <div>
+                 <h3 className="text-center"> Update Book</h3>
                 <br></br>
                    <div className = "container">
                         <div className = "row">
@@ -62,20 +84,35 @@ class UpdateBookComponent extends Component {
                                 <h3 className="text-center">Update Book</h3>
                                 <div className = "card-body">
                                     <form>
-                                        <div className = "form-group">
+                                    <div className = "form-group">
                                             <label> Name: </label>
-                                            <input placeholder="Name" name="name" className="form-control" 
-                                                value={this.state.name} onChange={this.changeNameHandler}/>
+                                            <input placeholder="Title" name="title" className="form-control" 
+                                                value={this.state.title} onChange={this.changeTitleHandler}/>
                                         </div>
                                         <div className = "form-group">
-                                            <label> Description: </label>
-                                            <input placeholder="Description" name="description" className="form-control" 
-                                                value={this.state.description} onChange={this.changeDescriptionHandler}/>
+                                            <label> Date: </label>
+                                            <input placeholder="Date" name="date" className="form-control" 
+                                                value={this.state.description} onChange={this.changeAuthorHandler}/>
                                         </div>
                                         <div className = "form-group">
                                             <label> Author: </label>
                                             <input placeholder="Author" name="author" className="form-control" 
-                                                value={this.state.author} onChange={this.changeAuthorHandler}/>
+                                                value={this.state.author} onChange={this.changeDateHandler}/>
+                                        </div>
+                                        <div className = "form-group">
+                                            <label> Genres: </label>
+                                            <input placeholder="Genres" name="genres" className="form-control" 
+                                                value={this.state.genres} onChange={this.changeGenresHandler}/>
+                                        </div>
+                                        <div className = "form-group">
+                                            <label> characters: </label>
+                                            <textarea placeholder="characters" name="characters" className="form-control" 
+                                                value={this.state.characters} onChange={this.changecharactersHandler}/>
+                                        </div>
+                                        <div className = "form-group">
+                                            <label> Synopsis: </label>
+                                            <textarea placeholder="Synopsis" name="synopsis" className="form-control" 
+                                                value={this.state.synopsis} onChange={this.changeSynopsisHandler} />
                                         </div>
 
                                         <button className="btn btn-success" onClick={this.updateBook}>Save</button>
