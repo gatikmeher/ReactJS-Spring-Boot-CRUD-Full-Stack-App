@@ -2,7 +2,7 @@ spring:
   application:
     name: BOOK-BACKEND
   datasource:
-    url: jdbc:mysql://localhost:3307/book_project?allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/book_project?allowPublicKeyRetrieval=true&useSSL=false
     username: user
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver

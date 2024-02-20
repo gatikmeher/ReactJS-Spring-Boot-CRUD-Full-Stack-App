@@ -26,7 +26,7 @@ import org.project.springboot.model.Book;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/book_project/bookapi")
+@RequestMapping("/book-project/bookapi")
 public class BookController {
 
 	@Autowired
