@@ -1,28 +1,28 @@
 import axios from 'axios';
 
-const EMPLOYEE_API_BASE_URL = "http://localhost:8080/api/v1/employees";
+const BOOK_API_BASE_URL = "http://localhost:8080/book_project/bookapi/";
 
-class EmployeeService {
+class BookService {
 
-    getEmployees(){
-        return axios.get(EMPLOYEE_API_BASE_URL);
+    getBooks() {
+        return axios.get(BOOK_API_BASE_URL);
     }
 
-    createEmployee(employee){
-        return axios.post(EMPLOYEE_API_BASE_URL, employee);
+    createBook(book) {
+        return axios.post(BOOK_API_BASE_URL, book);
     }
 
-    getEmployeeById(employeeId){
-        return axios.get(EMPLOYEE_API_BASE_URL + '/' + employeeId);
+    getBookById(bookId) {
+        return axios.get(BOOK_API_BASE_URL + '/' + bookId);
     }
 
-    updateEmployee(employee, employeeId){
-        return axios.put(EMPLOYEE_API_BASE_URL + '/' + employeeId, employee);
+    updateBook(book, bookId) {
+        return axios.put(BOOK_API_BASE_URL + '/' + bookId, book);
     }
 
-    deleteEmployee(employeeId){
-        return axios.delete(EMPLOYEE_API_BASE_URL + '/' + employeeId);
+    deleteBook(bookId) {
+        return axios.delete(BOOK_API_BASE_URL + '/' + bookId);
     }
 }
 
-export default new EmployeeService()
+export default new BookService()
