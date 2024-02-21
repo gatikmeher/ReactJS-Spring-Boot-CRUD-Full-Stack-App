@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.validation.Valid;
 import org.project.springboot.exception.ResourceNotFoundException;
 import org.project.springboot.repository.BookRepository;
 import org.project.springboot.service.BookService;
@@ -31,15 +32,18 @@ public class BookController {
 	@GetMapping("/books")
 	public List<Book> getAllBooks(@RequestParam(required = false, name = "page") Integer page,
 								  @RequestParam(required = false, name = "size") Integer size,
-								  @RequestParam(required = false, name = "q") String q){
-
-        Pageable pageable  = PageRequest.of(page.intValue(), size.intValue() < 1 ? 20 : size.intValue());
-		return bookService.findAllBook(pageable);
+								  @RequestParam(required = false, name = "title") String title,
+								  @RequestParam(required = false, name = "date") String date,
+								  @RequestParam(required = false, name = "genres") String genres){
+		page = null == page ? 0 : page;
+		size = null == size ? 25 : size;
+        Pageable pageable  = PageRequest.of(page.intValue(), size.intValue());
+		return bookService.findAllBook(title, date, genres, pageable);
 	}		
 	
 	// create book rest api
 	@PostMapping("/books")
-	public Book createBook(@RequestBody Book book) {
+	public Book createBook(@Valid @RequestBody Book book) {
 		return bookRepository.save(book);
 	}
 	

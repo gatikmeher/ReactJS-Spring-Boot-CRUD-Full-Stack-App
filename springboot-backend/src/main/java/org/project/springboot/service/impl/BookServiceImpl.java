@@ -18,11 +18,11 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public List<Book> findAllBook(Pageable pageable) {
+    public List<Book> findAllBook(String title, String date, String genres, Pageable pageable) {
         if(pageable == null) {
             pageable  = PageRequest.of(0, 20);
         }
-        return bookRepository.findAll(pageable).stream().toList();
+        return bookRepository.findByTitleIgnoreCaseContainingOrDateIgnoreCaseContainingOrGenresIgnoreCaseContaining(title, date, genres, pageable).stream().toList();
     }
 }
 

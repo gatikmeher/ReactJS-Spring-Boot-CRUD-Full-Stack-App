@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface BookService {
 
-    List<Book> findAllBook(Pageable pageable);
+    List<Book> findAllBook(String title, String date, String genres, Pageable pageable);
 }
