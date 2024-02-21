@@ -63,10 +63,11 @@ class ListBookComponent extends Component {
             </Dropdown.Menu>
           </Dropdown>
           <div>
-            <button className="btn btn-primary" style={{ marginLeft: "270px" }}>
+            <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
               Prev
             </button>
-            <button className="btn btn-primary" style={{ marginLeft: "60px" }}>
+            <input className="btn" type="text" placeholder="1 - 50" />
+            <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
               Next
             </button>
           </div>
