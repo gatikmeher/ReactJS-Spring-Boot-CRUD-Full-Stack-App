@@ -10,9 +10,11 @@ class ListBookComponent extends Component {
     this.state = {
       books: [],
     };
+    this.state.searchSelection = "title"
     this.addBook = this.addBook.bind(this);
     this.editBook = this.editBook.bind(this);
     this.deleteBook = this.deleteBook.bind(this);
+    this.searchBook = this.searchBook.bind(this);
   }
 
   deleteBook(id) {
@@ -30,10 +32,30 @@ class ListBookComponent extends Component {
   }
 
   componentDidMount() {
-    BookService.getBooks().then((res) => {
+    BookService.getBooks(null, null, 0).then((res) => {
       this.setState({ books: res.data.content });
     });
   }
+
+  searchBook() {
+    console.log("searchSelection: " + this.state.searchSelection)
+    BookService.getBooks(this.state.searchSelection, this.state.searchText, this.state.page).then((res) => {
+      this.setState({ books: res.data.content });
+    });
+  }
+
+  searchSelectionChanged = (event) => {
+    console.log("searchSelection: " + event.target.value)
+    this.state.searchSelection = event.target.value
+    // this.setState({searchSelection: event.target.value});
+  }
+
+  searchTextChanged = (event) => {
+    console.log("searchText: " + event.target.value)
+    this.state.searchText = event.target.value
+    // this.setState({searchSelection: event.target.value});
+  }
+
 
   addBook() {
     this.props.history.push("/add-book/_add");
@@ -51,7 +73,7 @@ class ListBookComponent extends Component {
             Add Book
           </button>{" "}
           &nbsp;&nbsp;&nbsp;
-          <Dropdown>
+          {/* <Dropdown>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
               Datatype
             </Dropdown.Toggle>
@@ -61,22 +83,20 @@ class ListBookComponent extends Component {
               <Dropdown.Item href="#/action-2">XML</Dropdown.Item>
               <Dropdown.Item href="#/action-3">TEXT</Dropdown.Item>
             </Dropdown.Menu>
-          </Dropdown>
+          </Dropdown> */}
           <div>
-            <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
-              Prev
-            </button>
-            <input className="btn" type="text" placeholder="1 - 50" />
-            <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
-              Next
-            </button>
-          </div>
+          <select className="form-control" >
+            <option value="JSON" >JSON</option>
+            <option value="XML" >XML</option>
+            <option value="CSV" >CSV</option>
+          </select>
+          </div>          
         </div>
 
         <br></br>
         <div className="row">
-          <div class="input-group mb-3">
-            <Dropdown>
+          <div className="input-group mb-3">
+            {/* <Dropdown>
               <Dropdown.Toggle variant="success" id="dropdown-basic">
                 Search Field
               </Dropdown.Toggle>
@@ -86,19 +106,35 @@ class ListBookComponent extends Component {
                 <Dropdown.Item href="#/action-2">Genres</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Date</Dropdown.Item>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
+            <div>
+            <select className="form-control" value={this.state.searchSelection}  onChange={this.searchSelectionChanged}>
+              <option value="title" name="title" selected={ this.state.searchSelection === 'title' ? 'selected' : false } >Title</option>
+              <option value="genres" name="genres"  selected={ this.state.searchSelection === 'genres' ? 'selected' : false }>Genres</option>
+              <option value="date" name="date" selected={ this.state.searchSelection === 'date' ? 'selected' : false }>Date</option>
+            </select>
+            </div>
             &nbsp;&nbsp;&nbsp;
             <input
               placeholder="Search"
-              name="title"
+              name="searchText"
               className="form-control"
-              value={this.state.title}
-              onChange={this.changeTitleHandler}
+              value={this.state.searchText}
+              onChange={this.searchTextChanged}
             />{" "}
             &nbsp;&nbsp;&nbsp;
-            <button className="btn btn-primary"> Search</button>{" "}
+            <button className="btn btn-primary" onClick={() => this.searchBook()}> Search</button>{" "}
             &nbsp;&nbsp;&nbsp;
           </div>
+        </div>
+        <div>
+          <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
+            Prev
+          </button>
+          <input className="btn" type="text" placeholder="1 - 50" />
+          <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
+            Next
+          </button>
         </div>
         <div className="row">
           <table className="table table-striped table-bordered">
@@ -121,16 +157,16 @@ class ListBookComponent extends Component {
                   <td>
                     {" "}
                     <p
-                      style={{
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                      }}
+                      // style={{
+                      //   WebkitLineClamp: 3,
+                      //   WebkitBoxOrient: "vertical",
+                      //   overflow: "hidden",
+                      //   display: "-webkit-box",
+                      // }}
                     >
                       {book.genres}
                     </p>
-                    <button
+                    {/* <button
                       style={{
                         border: "none",
                         backgroundColor: "#8a8adb",
@@ -138,21 +174,21 @@ class ListBookComponent extends Component {
                       }}
                     >
                       Read More...
-                    </button>
+                    </button> */}
                   </td>
                   <td>
                     {" "}
                     <p
-                      style={{
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                      }}
+                      // style={{
+                      //   WebkitLineClamp: 3,
+                      //   WebkitBoxOrient: "vertical",
+                      //   overflow: "hidden",
+                      //   display: "-webkit-box",
+                      // }}
                     >
                       {book.characters}
                     </p>
-                    <button
+                    {/* <button
                       style={{
                         border: "none",
                         backgroundColor: "#8a8adb",
@@ -160,21 +196,21 @@ class ListBookComponent extends Component {
                       }}
                     >
                       Read More...
-                    </button>
+                    </button> */}
                   </td>
                   <td>
                     {" "}
                     <p
-                      style={{
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                      }}
+                      // style={{
+                      //   WebkitLineClamp: 3,
+                      //   WebkitBoxOrient: "vertical",
+                      //   overflow: "hidden",
+                      //   display: "-webkit-box",
+                      // }}
                     >
                       {book.synopsis}
                     </p>
-                    <button
+                    {/* <button
                       style={{
                         border: "none",
                         backgroundColor: "#8a8adb",
@@ -182,7 +218,7 @@ class ListBookComponent extends Component {
                       }}
                     >
                       Read More...
-                    </button>
+                    </button> */}
                   </td>
                   <td>
                     <button

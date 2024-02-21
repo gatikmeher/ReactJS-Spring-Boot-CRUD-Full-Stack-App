@@ -43,7 +43,7 @@ public class BookController {
 	
 	// create book rest api
 	@PostMapping("/books")
-	public ResponseEntity<Object> createBook(@Valid @RequestBody Book book) {
+	public ResponseEntity<Object> insertBook(@Valid @RequestBody Book book) {
 		return ResponseEntity.ok().body(bookService.saveBook(book));
 	}
 	

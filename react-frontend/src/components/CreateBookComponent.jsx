@@ -12,7 +12,7 @@ class CreateBookComponent extends Component {
             author: '',
             date: '',
             genres: '',
-            character: '',
+            characters: '',
             synopsis: '',
             
         }
@@ -34,7 +34,7 @@ class CreateBookComponent extends Component {
                     date: book.date,
                     genres: book.genres,
                     author : book.author,
-                    character: book.character,
+                    characters: book.characters,
                     synopsis: book.synopsis
                 });
             });
@@ -117,8 +117,8 @@ class CreateBookComponent extends Component {
                                         </div>
                                         <div className = "form-group">
                                             <label> Character: </label>
-                                            <input placeholder="Character" name="character" className="form-control" 
-                                                value={this.state.character} onChange={this.changeCharacterHandler}/>
+                                            <input placeholder="Characters" name="characters" className="form-control" 
+                                                value={this.state.characters} onChange={this.changeCharacterHandler}/>
                                         </div>
                                         <div className = "form-group">
                                             <label> Synopsis: </label>
