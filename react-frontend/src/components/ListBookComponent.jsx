@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import BookService from '../services/BookService'
+import 'font-awesome/css/font-awesome.min.css'
 
 class ListBookComponent extends Component {
     constructor(props) {
@@ -98,7 +99,7 @@ class ListBookComponent extends Component {
                                              <td> {book.genres}</td>
                                              <td> {book.characters}</td>
                                              <td> {book.synopsis}</td>
-                                             <td>
+                                             <td>                                        
                                                  <button onClick={ () => this.editBook(book.id)} className="btn btn-info">Update </button>
                                                  <button style={{marginLeft: "10px"}} onClick={ () => this.deleteBook(book.id)} className="btn btn-danger">Delete </button>
                                                  <button style={{marginLeft: "10px"}} onClick={ () => this.viewBook(book.id)} className="btn btn-secondary">View </button>
