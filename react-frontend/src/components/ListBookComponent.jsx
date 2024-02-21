@@ -27,7 +27,7 @@ class ListBookComponent extends Component {
 
     componentDidMount(){
         BookService.getBooks().then((res) => {
-            this.setState({ books: res.data});
+            this.setState({ books: res.data.content});
         });
     }
 
@@ -40,9 +40,40 @@ class ListBookComponent extends Component {
             <div>
                  <h2 className="text-center">Books List</h2>
                  <div className = "row">
-                    <button className="btn btn-primary" onClick={this.addBook}> Add Book</button>
+                    <button className="btn btn-primary" onClick={this.addBook}> Add Book</button> &nbsp;&nbsp;&nbsp;
+                    <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Datatype
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">JSON</a></li>
+                        <li><a class="dropdown-item" href="#">XML</a></li>
+                        <li><a class="dropdown-item" href="#">Text</a></li>
+                    </ul>
+                    </div>
+                    
                  </div>
+                 
                  <br></br>
+                 <div className = "row">
+                    <div class="input-group mb-3">
+                    <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Search Field
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">Title</a></li>
+                        <li><a class="dropdown-item" href="#">Gegnres</a></li>
+                        <li><a class="dropdown-item" href="#">Date</a></li>
+                    </ul>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;
+                    <input placeholder="Search" name="title" className="form-control" 
+                            value={this.state.title} onChange={this.changeTitleHandler}/> &nbsp;&nbsp;&nbsp;
+                        <button className="btn btn-primary"> Search</button> &nbsp;&nbsp;&nbsp;
+                    </div>
+                    
+                </div>
                  <div className = "row">
                         <table className = "table table-striped table-bordered">
 

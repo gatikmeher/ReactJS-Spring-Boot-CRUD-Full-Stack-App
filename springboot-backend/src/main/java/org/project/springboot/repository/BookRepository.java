@@ -13,6 +13,6 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    Page<Book> findByTitleIgnoreCaseContainingOrDateIgnoreCaseContainingOrGenresIgnoreCaseContaining(String title, String date, String genres, Pageable pageable);
+    Page<Book> findByTitleContainingOrDateContainingOrGenresContaining(String title, String date, String genres, Pageable pageable);
 
 }

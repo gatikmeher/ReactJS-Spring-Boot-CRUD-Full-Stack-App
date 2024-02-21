@@ -45,27 +45,27 @@ class UpdateBookComponent extends Component {
     }
     
     changeTitleHandler= (event) => {
-        this.setState({name: event.target.value});
+        this.setState({title: event.target.value});
     }
 
     changeAuthorHandler= (event) => {
-        this.setState({description: event.target.value});
-    }
-
-    changeDateHandler= (event) => {
         this.setState({author: event.target.value});
     }
 
+    changeDateHandler= (event) => {
+        this.setState({date: event.target.value});
+    }
+
     changeGenresHandler= (event) => {
-        this.setState({description: event.target.value});
+        this.setState({genres: event.target.value});
     }
 
     changecharactersHandler= (event) => {
-        this.setState({description: event.target.value});
+        this.setState({character: event.target.value});
     }
 
     changeSynopsisHandler= (event) => {
-        this.setState({description: event.target.value});
+        this.setState({synopsis: event.target.value});
     }
 
     cancel(){
@@ -92,12 +92,12 @@ class UpdateBookComponent extends Component {
                                         <div className = "form-group">
                                             <label> Date: </label>
                                             <input placeholder="Date" name="date" className="form-control" 
-                                                value={this.state.description} onChange={this.changeAuthorHandler}/>
+                                                value={this.state.date} onChange={this.changeDateHandler}/>
                                         </div>
                                         <div className = "form-group">
                                             <label> Author: </label>
                                             <input placeholder="Author" name="author" className="form-control" 
-                                                value={this.state.author} onChange={this.changeDateHandler}/>
+                                                value={this.state.author} onChange={this.changeAuthorHandler}/>
                                         </div>
                                         <div className = "form-group">
                                             <label> Genres: </label>
