@@ -1,38 +1,44 @@
 import axios from "axios";
 
-let BOOK_API_BASE_URL = "http://localhost:8585/book-project/bookapi/books";
+const BOOK_API_BASE_URL = "http://localhost:8080/book-project/bookapi/books";
+let FINAL_URL = "";
 
 class BookService {
-  getBooks(searchSelection, searchText, page) {
+  FINAL_URL = BOOK_API_BASE_URL;
+  getBooks(searchSelection, searchText, page, outputFormat) {
     console.log("searchSelection: " + searchSelection);
     console.log("searchText: " + searchText);
     console.log("page: " + page);
-    if (page === "undefined") {
+    console.log("outputFormat: " + outputFormat);
+    console.log(typeof(searchSelection) !== 'undefined');
+    if (page === 'undefined') {
       page = 0;
     }
-    if (searchSelection !== "undefined" && searchText !== "undefined") {
-      BOOK_API_BASE_URL =
-        BOOK_API_BASE_URL +
-        "?size=25&page=0&" +
-        searchSelection +
-        "=" +
-        searchText;
+    if (typeof(searchSelection) !== 'undefined' && typeof(searchText) !== 'undefined') {
+      FINAL_URL = BOOK_API_BASE_URL + "?size=25&page=0&" + searchSelection + "=" + searchText
+    } else {
+      FINAL_URL = BOOK_API_BASE_URL + "?size=25&page=0"
     }
-    // if(typeof page === 'undefined') {
-    //   BOOK_API_BASE_URL = BOOK_API_BASE_URL + "?size=25&page=0"
-    //   console.log("Base URl1: " + BOOK_API_BASE_URL)
-    // } else {
-    //   BOOK_API_BASE_URL = BOOK_API_BASE_URL + "?size=25&page=" + page
-    // }
-    // if(searchSelection !== undefined || searchSelection != "" || searchText !== undefined || searchText != "") {
-    //   BOOK_API_BASE_URL = BOOK_API_BASE_URL + "&searchSelection=" + searchText
-    //   console.log("Base URl2: " + BOOK_API_BASE_URL)
-    // }
-    return axios.get(BOOK_API_BASE_URL, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    if (outputFormat === "json" || outputFormat === 'undefined') {
+      return axios.get(FINAL_URL, {
+        headers: {
+          'Output-Format': 'application/json'
+        },
+      });      
+    } else if(outputFormat === "xml") {
+      return axios.get(FINAL_URL, {
+        headers: {
+          'Output-Format': 'application/xml'
+        },
+      });
+    } else {
+      return axios.get(FINAL_URL, {
+        headers: {
+          'Output-Format': 'application/xml'
+        },
+      });
+    }
+    
   }
 
   createBook(book) {

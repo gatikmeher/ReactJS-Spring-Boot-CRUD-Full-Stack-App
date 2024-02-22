@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,16 +31,35 @@ public class BookController {
     private BookService bookService;
 	
 	// get all books
-	@GetMapping("/books")
-	public ResponseEntity<Object> getAllBooks(@RequestParam(required = false, name = "page") Integer page,
-								  @RequestParam(required = false, name = "size") Integer size,
-								  @RequestParam(required = false, name = "title") String title,
-								  @RequestParam(required = false, name = "date") String date,
-								  @RequestParam(required = false, name = "genres") String genres){
+	@GetMapping(value = "/books", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<Object> getAllBooks(@RequestHeader(value = "Output-Format", required = false) String acceptType,
+											  @RequestParam(required = false, name = "page") Integer page,
+											  @RequestParam(required = false, name = "size") Integer size,
+											  @RequestParam(required = false, name = "title") String title,
+											  @RequestParam(required = false, name = "date") String date,
+											  @RequestParam(required = false, name = "genres") String genres){
+		HttpHeaders header = new HttpHeaders();
+		System.out.println("Output-Format: " + acceptType);
+		if (acceptType != null) {
+			switch (acceptType) {
+				case MediaType.APPLICATION_JSON_VALUE:
+					header.setContentType(MediaType.APPLICATION_JSON);
+					break;
+				case MediaType.APPLICATION_XML_VALUE:
+					header.setContentType(MediaType.APPLICATION_XML);
+					break;
+				case MediaType.TEXT_PLAIN_VALUE:
+					header.setContentType(MediaType.TEXT_PLAIN);
+					break;
+				default:
+					header.setContentType(MediaType.APPLICATION_JSON);
+					break;
+			}
+		}
 		page = null == page ? 0 : page;
 		size = null == size ? 25 : size;
         Pageable pageable  = PageRequest.of(page.intValue(), size.intValue());
-		return ResponseEntity.ok().body(bookService.findAllBook(title, date, genres, pageable));
+		return ResponseEntity.ok().headers(header).body(bookService.findAllBook(title, date, genres, pageable));
 	}		
 	
 	// create book rest api

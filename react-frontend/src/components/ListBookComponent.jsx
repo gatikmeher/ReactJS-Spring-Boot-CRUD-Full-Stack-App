@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import BookService from "../services/BookService";
 import "font-awesome/css/font-awesome.min.css";
-import Dropdown from "react-bootstrap/Dropdown";
 import { Table, Pagination } from "react-bootstrap";
+import xml2js from 'xml2js';
 
 class ListBookComponent extends Component {
   constructor(props) {
@@ -12,6 +12,8 @@ class ListBookComponent extends Component {
       books: [],
       booksToBeShown: [],
       currentPage: 1,
+      outputFormat: 'json',
+      page: 0
     };
     this.state.searchSelection = "title";
     this.addBook = this.addBook.bind(this);
@@ -35,20 +37,22 @@ class ListBookComponent extends Component {
   }
 
   componentDidMount() {
-    BookService.getBooks(null, null, 0).then((res) => {
-      this.setState({
-        books: res.data.content,
-        pageSize: 10,
-        booksToBeShown: [],
-        pageArray: [],
+      BookService.getBooks(null, null, 0, this.state.outputFormat).then((res) => {
+        console.log("Res data componetDidmOunt 1: " + res.data);
+        this.setState({
+          books: res.data.content,
+          pageSize: 10,
+          booksToBeShown: [],
+          pageArray: [],
+        });
+        this.calculatePaginationDetails(1);
       });
-      this.calculatePaginationDetails(1);
-    });
+        this.calculatePaginationDetails(1);
   }
 
   // Pagination Implementation
   calculatePaginationDetails = (page) => {
-    console.log(page);
+    console.log("Page: " + page);
     let books = this.state.books;
     let total = books.length;
     let pages = Math.floor(books.length / this.state.pageSize + 1);
@@ -108,19 +112,41 @@ class ListBookComponent extends Component {
   handlePagination = (e) => {
     e.preventDefault();
     console.log(e.target);
-    if (e.target.text !== undefined) {
+    if (e.target.text !== 'undefined') {
       this.calculatePaginationDetails(e.target.text);
     }
   };
 
   searchBook() {
-    console.log("searchSelection: " + this.state.searchSelection);
+    console.log("searchSelection: " + this.state.searchSelection);    
+    if(this.state.page === 'undefined') {this.state.page = 0}  
     BookService.getBooks(
       this.state.searchSelection,
       this.state.searchText,
-      this.state.page
+      this.state.page,
+      this.state.outputFormat
     ).then((res) => {
-      this.setState({ books: res.data.content });
+      if(this.state.outputFormat === 'json') {
+        this.setState({ books: res.data.content });
+      } else {
+        var parser = new xml2js.Parser();
+        let finalData = [];
+        parser.parseString(res.data, function(err, printData) {
+          console.log("Res data componetDidmOunt 2: " + JSON.stringify(printData['PageImpl'].content[0].content));
+          if(printData['PageImpl'].content[0] === 'undefined') {
+            finalData = [];
+          } else {
+            finalData = printData['PageImpl'].content[0].content;
+          }          
+        })
+        this.setState({
+            books: finalData,
+            pageSize: 10,
+            booksToBeShown: [],
+            pageArray: [],
+          });
+      }
+      
     });
   }
 
@@ -136,271 +162,403 @@ class ListBookComponent extends Component {
     // this.setState({searchSelection: event.target.value});
   };
 
+  outputFormatChanged = (event) => {
+    console.log("outputFormat: " + event.target.value);
+    this.state.outputFormat = event.target.value;
+    // this.setState({searchSelection: event.target.value});
+  };
+
   addBook() {
     this.props.history.push("/add-book/_add");
   }
 
   render() {
-    return (
-      <div>
-        <h2 className="text-center" style={{ marginTop: "20px" }}>
-          Books List
-        </h2>
-        <div className="row" style={{ marginTop: "20px" }}>
-          <button className="btn btn-primary" onClick={this.addBook}>
-            {" "}
-            Add Book
-          </button>{" "}
-          &nbsp;&nbsp;&nbsp;
-          {/* <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-              Datatype
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">JSON</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">XML</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">TEXT</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown> */}
-          <div>
-            <select className="form-control">
-              <option value="JSON">JSON</option>
-              <option value="XML">XML</option>
-              <option value="CSV">CSV</option>
-            </select>
-          </div>
-        </div>
-
-        <br></br>
-        <div className="row">
-          <div className="input-group mb-3">
-            {/* <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Search Field
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Title</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Genres</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Date</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown> */}
-            <div>
-              <select
-                className="form-control"
-                value={this.state.searchSelection}
-                onChange={this.searchSelectionChanged}
-              >
-                <option
-                  value="title"
-                  name="title"
-                  selected={
-                    this.state.searchSelection === "title" ? "selected" : false
-                  }
-                >
-                  Title
-                </option>
-                <option
-                  value="genres"
-                  name="genres"
-                  selected={
-                    this.state.searchSelection === "genres" ? "selected" : false
-                  }
-                >
-                  Genres
-                </option>
-                <option
-                  value="date"
-                  name="date"
-                  selected={
-                    this.state.searchSelection === "date" ? "selected" : false
-                  }
-                >
-                  Date
-                </option>
-              </select>
-            </div>
-            &nbsp;&nbsp;&nbsp;
-            <input
-              placeholder="Search"
-              name="searchText"
-              className="form-control"
-              value={this.state.searchText}
-              onChange={this.searchTextChanged}
-            />{" "}
-            &nbsp;&nbsp;&nbsp;
-            <button
-              className="btn btn-primary"
-              onClick={() => this.searchBook()}
-            >
+    if(this.state.outputFormat === 'json') {
+      return (
+        <div>
+          <h2 className="text-center" style={{ marginTop: "20px" }}>
+            Books List
+          </h2>
+          <div className="row" style={{ marginTop: "20px" }}>
+            <button className="btn btn-primary" onClick={this.addBook}>
               {" "}
-              Search
+              Add Book
             </button>{" "}
             &nbsp;&nbsp;&nbsp;
+            <div>
+              <select className="form-control"
+              id={this.state.outputFormat}
+              onChange={this.outputFormatChanged}
+              > 
+              <option
+                    value="json"
+                    name="json"
+                    selected={this.state.outputFormat == "json" ? "selected" : false}
+                  >
+                    JSON
+                  </option>
+                  <option
+                    value="xml"
+                    name="xml"                  
+                    selected={this.state.outputFormat == "xml" ? "selected" : false}
+                  >
+                    XML
+                  </option>
+                  <option
+                    value="csv"
+                    name="csv"
+                    selected={this.state.outputFormat == "csv" ? "selected" : false}
+                  >
+                    CSV
+                  </option>
+              </select>
+            </div>
+          </div>
+  
+          <br></br>
+          <div className="row">
+            <div className="input-group mb-3">
+              <div>
+                <select
+                  className="form-control"
+                  id={this.state.searchSelection}
+                  onChange={this.searchSelectionChanged}
+                >
+                  <option
+                    value="title"
+                    name="title"
+                    selected={this.state.searchSelection == "title" ? "selected" : false}
+                  >
+                    Title
+                  </option>
+                  <option
+                    value="genres"
+                    name="genres"                  
+                    selected={this.state.searchSelection == "genres" ? "selected" : false}
+                  >
+                    Genres
+                  </option>
+                  <option
+                    value="date"
+                    name="date"
+                    selected={this.state.searchSelection == "date" ? "selected" : false}
+                  >
+                    Date
+                  </option>
+                </select>
+              </div>
+              &nbsp;&nbsp;&nbsp;
+              <input
+                placeholder="Search"
+                id="searchText"
+                className="form-control"
+                value={this.state.searchText}
+                onChange={this.searchTextChanged}
+              />{" "}
+              &nbsp;&nbsp;&nbsp;
+              <button
+                className="btn btn-primary"
+                onClick={() => this.searchBook()}
+              >
+                {" "}
+                Search
+              </button>{" "}
+              &nbsp;&nbsp;&nbsp;
+            </div>
+          </div>
+          {/* <div>
+            <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
+              Prev
+            </button>
+            <input className="btn" type="text" placeholder="1 - 50" />
+            <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
+              Next
+            </button>
+          </div> */}
+  
+          <div style={{ marginLeft: "340px" }}>
+            <Pagination>
+              <Pagination.First onClick={(e) => this.handlePagination(e)} />
+              <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
+              {this.state.pageArray &&
+                this.state.pageArray.length &&
+                this.state.pageArray.map((item) => (
+                  <Pagination.Item
+                    key={item}
+                    onClick={(e) => this.handlePagination(e)}
+                    active={this.state.currentPage === item}
+                  >
+                    {item}
+                  </Pagination.Item>
+                ))}
+              <Pagination.Next onClick={(e) => this.handlePagination(e)} />
+              <Pagination.Last onClick={(e) => this.handlePagination(e)} />
+            </Pagination>
+          </div>              
+          <div className="row">
+            <table className="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th> Title</th>
+                  <th> Author</th>
+                  <th> Date</th>
+                  <th> Genres</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.books.map((book) => (
+                  <tr key={book.id}>
+                    <td> {book.title} </td>
+                    <td> {book.author}</td>
+                    <td> {book.date}</td>
+                    <td>
+                      {" "}
+                      <p>
+                        {book.genres}
+                      </p>                      
+                    </td>
+                    <td>
+                      <button
+                        style={{
+                          backgroundColor: "#c2a8a7",
+                          boxShadow:
+                            "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
+                        }}
+                        onClick={() => this.editBook(book.id)}
+                        className="btn"
+                      >
+                        Update{" "}
+                      </button>
+                      <button
+                        style={{
+                          paddingRight: "15px",
+                          paddingLeft: "15px",
+                          backgroundColor: "#d1483f",
+                          marginTop: "5px",
+                          boxShadow:
+                            "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
+                        }}
+                        onClick={() => this.deleteBook(book.id)}
+                        className="btn"
+                      >
+                        Delete{" "}
+                      </button>
+                      <button
+                        style={{
+                          backgroundColor: "#5cd15a",
+                          paddingRight: "21px",
+                          paddingLeft: "21px",
+                          marginTop: "5px",
+                          boxShadow:
+                            "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
+                        }}
+                        onClick={() => this.viewBook(book.id)}
+                        className="btn"
+                      >
+                        View{" "}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-        {/* <div>
-          <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
-            Prev
-          </button>
-          <input className="btn" type="text" placeholder="1 - 50" />
-          <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
-            Next
-          </button>
-        </div> */}
-
-        <div style={{ marginLeft: "340px" }}>
-          <Pagination>
-            <Pagination.First onClick={(e) => this.handlePagination(e)} />
-            <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
-            {this.state.pageArray &&
-              this.state.pageArray.length &&
-              this.state.pageArray.map((item) => (
-                <Pagination.Item
-                  key={item}
-                  onClick={(e) => this.handlePagination(e)}
-                  active={this.state.currentPage === item}
+      );
+    } else if(this.state.outputFormat === 'xml') {
+      console.log("Content: " + this.state.books)
+      return (
+        <div>
+          <h2 className="text-center" style={{ marginTop: "20px" }}>
+            Books List
+          </h2>
+          <div className="row" style={{ marginTop: "20px" }}>
+            <button className="btn btn-primary" onClick={this.addBook}>
+              {" "}
+              Add Book
+            </button>{" "}
+            &nbsp;&nbsp;&nbsp;
+            <div>
+              <select className="form-control"
+              id={this.state.outputFormat}
+              onChange={this.outputFormatChanged}
+              > 
+              <option
+                    value="json"
+                    name="json"
+                    selected={this.state.outputFormat == "json" ? "selected" : false}
+                  >
+                    JSON
+                  </option>
+                  <option
+                    value="xml"
+                    name="xml"                  
+                    selected={this.state.outputFormat == "xml" ? "selected" : false}
+                  >
+                    XML
+                  </option>
+                  <option
+                    value="csv"
+                    name="csv"
+                    selected={this.state.outputFormat == "csv" ? "selected" : false}
+                  >
+                    CSV
+                  </option>
+              </select>
+            </div>
+          </div>
+  
+          <br></br>
+          <div className="row">
+            <div className="input-group mb-3">
+              <div>
+                <select
+                  className="form-control"
+                  id={this.state.searchSelection}
+                  onChange={this.searchSelectionChanged}
                 >
-                  {item}
-                </Pagination.Item>
-              ))}
-            <Pagination.Next onClick={(e) => this.handlePagination(e)} />
-            <Pagination.Last onClick={(e) => this.handlePagination(e)} />
-          </Pagination>
-        </div>
-        <div className="row">
-          <table className="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th> Title</th>
-                <th> Author</th>
-                <th> Date</th>
-                <th> Genres</th>
-                <th> Characters</th>
-                <th> Synopsis</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.books.map((book) => (
-                <tr key={book.id}>
-                  <td> {book.title} </td>
-                  <td> {book.author}</td>
-                  <td> {book.date}</td>
-                  <td>
-                    {" "}
-                    <p
-                    // style={{
-                    //   WebkitLineClamp: 3,
-                    //   WebkitBoxOrient: "vertical",
-                    //   overflow: "hidden",
-                    //   display: "-webkit-box",
-                    // }}
-                    >
-                      {book.genres}
-                    </p>
-                    {/* <button
-                      style={{
-                        border: "none",
-                        backgroundColor: "#8a8adb",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      Read More...
-                    </button> */}
-                  </td>
-                  <td>
-                    {" "}
-                    <p
-                    // style={{
-                    //   WebkitLineClamp: 3,
-                    //   WebkitBoxOrient: "vertical",
-                    //   overflow: "hidden",
-                    //   display: "-webkit-box",
-                    // }}
-                    >
-                      {book.characters}
-                    </p>
-                    {/* <button
-                      style={{
-                        border: "none",
-                        backgroundColor: "#8a8adb",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      Read More...
-                    </button> */}
-                  </td>
-                  <td>
-                    {" "}
-                    <p
-                    // style={{
-                    //   WebkitLineClamp: 3,
-                    //   WebkitBoxOrient: "vertical",
-                    //   overflow: "hidden",
-                    //   display: "-webkit-box",
-                    // }}
-                    >
-                      {book.synopsis}
-                    </p>
-                    {/* <button
-                      style={{
-                        border: "none",
-                        backgroundColor: "#8a8adb",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      Read More...
-                    </button> */}
-                  </td>
-                  <td>
-                    <button
-                      style={{
-                        backgroundColor: "#c2a8a7",
-                        boxShadow:
-                          "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
-                      }}
-                      onClick={() => this.editBook(book.id)}
-                      className="btn"
-                    >
-                      Update{" "}
-                    </button>
-                    <button
-                      style={{
-                        paddingRight: "15px",
-                        paddingLeft: "15px",
-                        backgroundColor: "#d1483f",
-                        marginTop: "5px",
-                        boxShadow:
-                          "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
-                      }}
-                      onClick={() => this.deleteBook(book.id)}
-                      className="btn"
-                    >
-                      Delete{" "}
-                    </button>
-                    <button
-                      style={{
-                        backgroundColor: "#5cd15a",
-                        paddingRight: "21px",
-                        paddingLeft: "21px",
-                        marginTop: "5px",
-                        boxShadow:
-                          "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
-                      }}
-                      onClick={() => this.viewBook(book.id)}
-                      className="btn"
-                    >
-                      View{" "}
-                    </button>
-                  </td>
+                  <option
+                    value="title"
+                    name="title"
+                    selected={this.state.searchSelection == "title" ? "selected" : false}
+                  >
+                    Title
+                  </option>
+                  <option
+                    value="genres"
+                    name="genres"                  
+                    selected={this.state.searchSelection == "genres" ? "selected" : false}
+                  >
+                    Genres
+                  </option>
+                  <option
+                    value="date"
+                    name="date"
+                    selected={this.state.searchSelection == "date" ? "selected" : false}
+                  >
+                    Date
+                  </option>
+                </select>
+              </div>
+              &nbsp;&nbsp;&nbsp;
+              <input
+                placeholder="Search"
+                id="searchText"
+                className="form-control"
+                value={this.state.searchText}
+                onChange={this.searchTextChanged}
+              />{" "}
+              &nbsp;&nbsp;&nbsp;
+              <button
+                className="btn btn-primary"
+                onClick={() => this.searchBook()}
+              >
+                {" "}
+                Search
+              </button>{" "}
+              &nbsp;&nbsp;&nbsp;
+            </div>
+          </div>
+          {/* <div>
+            <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
+              Prev
+            </button>
+            <input className="btn" type="text" placeholder="1 - 50" />
+            <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
+              Next
+            </button>
+          </div> */}
+  
+          <div style={{ marginLeft: "340px" }}>
+            <Pagination>
+              <Pagination.First onClick={(e) => this.handlePagination(e)} />
+              <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
+              {this.state.pageArray &&
+                this.state.pageArray.length &&
+                this.state.pageArray.map((item) => (
+                  <Pagination.Item
+                    key={item}
+                    onClick={(e) => this.handlePagination(e)}
+                    active={this.state.currentPage === item}
+                  >
+                    {item}
+                  </Pagination.Item>
+                ))}
+              <Pagination.Next onClick={(e) => this.handlePagination(e)} />
+              <Pagination.Last onClick={(e) => this.handlePagination(e)} />
+            </Pagination>
+          </div>              
+          <div className="row">
+            <table className="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th> Title</th>
+                  <th> Author</th>
+                  <th> Date</th>
+                  <th> Genres</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {this.state.books.map((book) => (
+                  <tr key={book.id}>
+                    <td> {book.title} </td>
+                    <td> {book.author}</td>
+                    <td> {book.date}</td>                    
+                    <td>
+                      <p>
+                        {book.genres}
+                      </p>                      
+                    </td>
+                    <td>
+                      <button
+                        style={{
+                          backgroundColor: "#c2a8a7",
+                          boxShadow:
+                            "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
+                        }}
+                        onClick={() => this.editBook(book.id)}
+                        className="btn"
+                      >
+                        Update{" "}
+                      </button>
+                      <button
+                        style={{
+                          paddingRight: "15px",
+                          paddingLeft: "15px",
+                          backgroundColor: "#d1483f",
+                          marginTop: "5px",
+                          boxShadow:
+                            "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
+                        }}
+                        onClick={() => this.deleteBook(book.id)}
+                        className="btn"
+                      >
+                        Delete{" "}
+                      </button>
+                      <button
+                        style={{
+                          backgroundColor: "#5cd15a",
+                          paddingRight: "21px",
+                          paddingLeft: "21px",
+                          marginTop: "5px",
+                          boxShadow:
+                            "0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)",
+                        }}
+                        onClick={() => this.viewBook(book.id)}
+                        className="btn"
+                      >
+                        View{" "}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    
   }
 }
 

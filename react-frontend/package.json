@@ -9,13 +9,18 @@
     "axios": "^1.6.7",
     "bootstrap": "^4.6.2",
     "bootstrap-icons": "^1.11.3",
+    "buffer": "^6.0.3",
     "font-awesome": "^4.7.0",
     "react": "^16.13.1",
     "react-bootstrap": "^2.10.1",
     "react-bootstrap-icons": "^1.11.3",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "react-xml-parser": "^1.1.8",
+    "timers": "^0.1.1",
+    "xml-js": "^1.6.11",
+    "xml2js": "^0.6.2"
   },
   "scripts": {
     "start": "react-scripts start",
