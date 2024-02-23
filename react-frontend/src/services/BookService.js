@@ -10,11 +10,11 @@ class BookService {
     console.log("searchText: " + searchText);
     console.log("page: " + page);
     console.log("outputFormat: " + outputFormat);
-    console.log(typeof(searchSelection) !== 'undefined');
+    console.log(typeof (searchSelection) !== 'undefined');
     if (page === 'undefined') {
       page = 0;
     }
-    if (typeof(searchSelection) !== 'undefined' && typeof(searchText) !== 'undefined') {
+    if (typeof (searchSelection) !== 'undefined' && typeof (searchText) !== 'undefined') {
       FINAL_URL = BOOK_API_BASE_URL + "?size=25&page=0&" + searchSelection + "=" + searchText
     } else {
       FINAL_URL = BOOK_API_BASE_URL + "?size=25&page=0"
@@ -24,8 +24,8 @@ class BookService {
         headers: {
           'Output-Format': 'application/json'
         },
-      });      
-    } else if(outputFormat === "xml") {
+      });
+    } else if (outputFormat === "xml") {
       return axios.get(FINAL_URL, {
         headers: {
           'Output-Format': 'application/xml'
@@ -34,11 +34,11 @@ class BookService {
     } else {
       return axios.get(FINAL_URL, {
         headers: {
-          'Output-Format': 'application/xml'
+          'Output-Format': 'text/plain'
         },
       });
     }
-    
+
   }
 
   createBook(book) {
