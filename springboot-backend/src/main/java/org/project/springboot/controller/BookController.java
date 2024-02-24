@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -31,7 +32,7 @@ import org.project.springboot.model.Book;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/book-project/bookapi")
 public class BookController {
@@ -66,27 +67,33 @@ public class BookController {
                     header.setContentType(MediaType.APPLICATION_XML);
                     break;
                 case "text/csv":
-//					header.setContentType(MediaType.TEXT_PLAIN);
-//					header.setContentDisposition(ContentDisposition.empty());
-                    response.setHeader("Content-Type", "text/csv");
+                    header.setContentType(MediaType.TEXT_PLAIN);
                     break;
                 default:
                     header.setContentType(MediaType.APPLICATION_JSON);
                     break;
             }
         }
+        header.setAccessControlAllowOrigin("*");
         page = null == page ? 0 : page;
         size = null == size ? 25 : size;
         Pageable pageable = PageRequest.of(page.intValue(), size.intValue());
-        if (StringUtils.isNotEmpty(acceptType) && acceptType.equals("text/csv")) {
-            PrintWriter writer = response.getWriter();
-            StatefulBeanToCsv<Book> beanWriter = new StatefulBeanToCsvBuilder<Book>(writer)
-                    .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
-                    .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-                    .withOrderedResults(false)
-                    .build();
-            //write all users to csv fill
-            beanWriter.write(bookService.findAllBook(title, date, genres, pageable).stream().toList());
+        if (StringUtils.isNotEmpty(acceptType) && acceptType.equals(MediaType.TEXT_PLAIN_VALUE)) {
+            StringBuilder csvContent = new StringBuilder();
+
+            List<Book> dataList = bookService.findAllBook(title, date, genres, pageable).stream().toList();
+
+            // Append CSV headers
+            csvContent.append("id,title,author,date,genres,characters,synopsis").append(System.lineSeparator()); // Replace with your actual column names
+
+            // Append data to CSV
+            csvContent.append(
+                    dataList.stream()
+                            .map(data -> data.getId() + ",\"" + data.getTitle().replace("\"", "") + "\",\"" + data.getAuthor().replace("\"", "")
+                                    + "\"," + data.getDate().replace("\"", "") + ",\"" + data.getGenres().replace("\"", "")
+                                    + "\",\"" + data.getCharacters().replace("\"", "") + "\",\"" + data.getSynopsis().replace("\"", "") + "\"") // Adjust based on your data model
+                            .collect(Collectors.joining(System.lineSeparator())));
+            return ResponseEntity.ok().headers(header).body(csvContent.toString());
         }
         return ResponseEntity.ok().headers(header).body(bookService.findAllBook(title, date, genres, pageable));
     }
