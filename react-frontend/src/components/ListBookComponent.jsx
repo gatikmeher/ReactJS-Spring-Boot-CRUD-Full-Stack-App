@@ -70,77 +70,11 @@ class ListBookComponent extends Component {
     // this.calculatePaginationDetails(1);
   }
 
-  // Pagination Implementation
-  // calculatePaginationDetails = (page) => {
-  //   console.log("Page: " + page);
-  //   let books = this.state.books;
-  //   let total = books.length;
-  //   let pages = Math.floor(books.length / this.state.pageSize + 1);
-  //   let firstPage = 1;
-  //   let lastPage = pages;
-  //   let pageArray = [];
-  //   let booksToBeShown = [];
-  //   let currentPage = 1;
-  //   if (page === 'undefined') {
-  //     currentPage = 1;
-  //   } else if (page.toString().toLowerCase().indexOf("previous") > 0) {
-  //     currentPage = this.state.currentPage - 1;
-  //     if (currentPage < 1) {
-  //       currentPage = 1;
-  //     }
-  //   } else if (page.toString().toLowerCase().indexOf("next") > 0) {
-  //     currentPage = this.state.currentPage + 1;
-  //     if (currentPage > pages) {
-  //       currentPage = pages;
-  //     }
-  //   } else if (page.toString().toLowerCase().indexOf("first") > 0) {
-  //     currentPage = 1;
-  //   } else if (page.toString().toLowerCase().indexOf("last") > 0) {
-  //     currentPage = pages;
-  //   } else {
-  //     currentPage = parseInt(page);
-  //   }
-  //   console.log(parseInt(page));
-  //   console.log(currentPage);
-  //   for (let i = currentPage; i <= currentPage + 4; i++) {
-  //     if (i <= pages) pageArray.push(i);
-  //   }
-  //   let currentItemIndex = (currentPage - 1) * this.state.pageSize;
-  //   for (
-  //     let i = currentItemIndex;
-  //     i < currentItemIndex + 10 && i <= total - 1;
-  //     i++
-  //   ) {
-  //     booksToBeShown.push(books[i]);
-  //   }
-  //   let updatedState = {
-  //     booksToBeShown: booksToBeShown,
-  //     pageArray: pageArray,
-  //     firstPage: firstPage,
-  //     lastPage: lastPage,
-  //     currentPage: currentPage,
-  //   };
-  //   console.log(updatedState);
-  //   this.setState({
-  //     booksToBeShown: booksToBeShown,
-  //     pageArray: pageArray,
-  //     firstPage: firstPage,
-  //     lastPage: lastPage,
-  //     currentPage: currentPage,
-  //   });
-  // };
-
-  // Handle Pagination
-  // handlePagination = (e) => {
-  //   e.preventDefault();
-  //   console.log("Target Text: " + e.target.text);
-  //   if (e.target.text !== 'undefined') {
-  //     this.calculatePaginationDetails(e.target.text);
-  //   } else {
-  //     this.calculatePaginationDetails(1);
-  //   }
-  // };
-
+  resetList() {    
+    this.state.searchText = ""
+    this.componentDidMount()
+  }
+  
   searchBook() {
     console.log("Page # in searchBook: " + this.state.page);
     if (this.state.page === 'undefined' || this.state.page < 0) { this.state.page = 0 }
@@ -185,21 +119,18 @@ class ListBookComponent extends Component {
   }
 
   searchSelectionChanged = (event) => {
-    console.log("searchSelection: " + event.target.value);
-    this.state.searchSelection = event.target.value;
-    // this.setState({searchSelection: event.target.value});
+    console.log("searchSelection: " + event.target.value);    
+    this.setState({searchSelection: event.target.value});
   };
 
   searchTextChanged = (event) => {
     console.log("searchText: " + event.target.value);
-    this.state.searchText = event.target.value;
-    // this.setState({searchSelection: event.target.value});
+    this.setState({searchText: event.target.value});
   };
 
   outputFormatChanged = (event) => {
     console.log("outputFormat: " + event.target.value);
-    this.state.outputFormat = event.target.value;
-    // this.setState({searchSelection: event.target.value});
+    this.setState({searchSelection: event.target.value});
   };
 
   addBook() {
@@ -214,8 +145,7 @@ class ListBookComponent extends Component {
             Books List
           </h2>
           <div className="row" style={{ marginTop: "20px" }}>
-            <button className="btn btn-primary" onClick={this.addBook}>
-
+            <button className="btn btn-info" onClick={this.addBook}>
               Add Book
             </button>
             &nbsp;&nbsp;&nbsp;
@@ -246,11 +176,17 @@ class ListBookComponent extends Component {
                   CSV
                 </option>
               </select>
+              
             </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+            <button
+                className="btn btn-info pull-right"
+                onClick={() => this.resetList()}
+            >
+                List All Books
+              </button>
           </div>
-
           <br></br>
-
           <div className="row">
             <div className="input-group mb-3">
               <div>
@@ -302,48 +238,30 @@ class ListBookComponent extends Component {
           </div>  
           <div className="row">
             <div className="input-group mb-3">
-          <button className="btn btn-primary" style={{ marginLeft: "230px" }} onClick={() => this.clickPrevious(this.state.page)}>
+          <button className="btn btn-secondary" style={{ marginLeft: "230px" }} onClick={() => this.clickPrevious(this.state.page)}>
               Prev
             </button>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button className="btn btn-primary" style={{ marginLeft: "1px" }} onClick={() => this.clickNext(this.state.page)}>
+            <button className="btn btn-secondary" style={{ marginLeft: "1px" }} onClick={() => this.clickNext(this.state.page)}>
               Next
             </button>
             <br></br>
-            {/* <Pagination>
-              <Pagination.First onClick={(e) => this.handlePagination(e)} />
-              <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
-              {this.state.pageArray &&
-                this.state.pageArray.length &&
-                this.state.pageArray.map((item) => (
-                  <Pagination.Item
-                    key={item}
-                    onClick={(e) => this.handlePagination(e)}
-                    active={this.state.currentPage === item}
-                  >
-                    {item}
-                  </Pagination.Item>
-                ))}
-
-              &nbsp;&nbsp;&nbsp;
-              <Pagination.Next onClick={(e) => this.handlePagination(e)} />
-              <Pagination.Last onClick={(e) => this.handlePagination(e)} />
-            </Pagination> */}
             </div>
           </div>        
           <div className="row">
             <table className="table table-striped table-bordered">
               <thead>
                 <tr>
-                  <th> Title</th>
-                  <th> Author</th>
-                  <th> Date</th>
-                  <th> Genres</th>
+                 <th width="5%"> Id</th>
+                  <th width="20%">Title</th>
+                  <th width="20%">Author</th>
+                  <th width="5%">Date</th>
+                  <th width="50%">Genres</th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.books.map((book) => (
-                  <tr key={book.id}>
+                    <tr key={book.id}><td> {book.id} </td>
                     <td> {book.title} </td>
                     <td> {book.author}</td>
                     <td> {book.date}</td>
@@ -504,26 +422,7 @@ class ListBookComponent extends Component {
             <button className="btn btn-primary" style={{ marginLeft: "1px" }} onClick={() => this.clickNext(this.state.page)}>
               Next
             </button>
-            <br></br>
-            {/* <Pagination>
-              <Pagination.First onClick={(e) => this.handlePagination(e)} />
-              <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
-              {this.state.pageArray &&
-                this.state.pageArray.length &&
-                this.state.pageArray.map((item) => (
-                  <Pagination.Item
-                    key={item}
-                    onClick={(e) => this.handlePagination(e)}
-                    active={this.state.currentPage === item}
-                  >
-                    {item}
-                  </Pagination.Item>
-                ))}
-
-              &nbsp;&nbsp;&nbsp;
-              <Pagination.Next onClick={(e) => this.handlePagination(e)} />
-              <Pagination.Last onClick={(e) => this.handlePagination(e)} />
-            </Pagination> */}
+            <br></br>            
             </div>
           </div>             
           <div className="row">

@@ -54,12 +54,11 @@ public class BookValidator {
 
     private static final List<Pattern> validationPatterns = buildPatterns(SQL_REGEXPS);
 
-    public boolean checkInputValue(String title, String author, String date, String genres, String characters, String synopsis) {
+    public void checkInputValue(String title, String author, String date, String genres, String characters, String synopsis) {
         if(!isSqlInjectionSafe(title) || !isSqlInjectionSafe(author) || !isSqlInjectionSafe(date) || !isSqlInjectionSafe(genres) ||
                 !isSqlInjectionSafe(characters) || !isSqlInjectionSafe(synopsis)) {
             throw new SQLInjectionException("SQL Injection detected");
         }
-        return true;
     }
 
     private boolean isSqlInjectionSafe(String dataString){
