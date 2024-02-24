@@ -41,6 +41,15 @@ class UpdateBookComponent extends Component {
         console.log('id => ' + JSON.stringify(this.state.id));
         BookService.updateBook(book, this.state.id).then( res => {
             this.props.history.push('/books');
+        }).catch((error) => {
+            this.setState({title: book.title,
+                date: book.date,
+                genres: book.genres,
+                author : book.author,
+                characters: book.characters,
+                synopsis: book.synopsis,
+                errorMessage: error.message
+            });
         });
     }
     
@@ -61,7 +70,7 @@ class UpdateBookComponent extends Component {
     }
 
     changecharactersHandler= (event) => {
-        this.setState({character: event.target.value});
+        this.setState({characters: event.target.value});
     }
 
     changeSynopsisHandler= (event) => {
@@ -84,6 +93,12 @@ class UpdateBookComponent extends Component {
                                 <h3 className="text-center">Update Book</h3>
                                 <div className = "card-body">
                                     <form>
+                                    <div className = "form-group">                                       
+                                       <div className = "form-group" class="alert alert-danger" role="alert" >
+                                       Alert! {this.state.errorMessage}
+                                       </div> 
+                                                                                  
+                                   </div>  
                                     <div className = "form-group">
                                             <label> Name: </label>
                                             <input placeholder="Title" name="title" className="form-control" 
@@ -117,6 +132,7 @@ class UpdateBookComponent extends Component {
 
                                         <button className="btn btn-success" onClick={this.updateBook}>Save</button>
                                         <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
+                                        
                                     </form>
                                 </div>
                             </div>

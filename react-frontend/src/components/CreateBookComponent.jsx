@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import BookService from '../services/BookService';
+import { useState } from 'react';
 
 class CreateBookComponent extends Component {
     constructor(props) {
-        super(props)
-
+        super(props)        
         this.state = {
             // step 2
             id: this.props.match.params.id,
@@ -14,6 +14,7 @@ class CreateBookComponent extends Component {
             genres: '',
             characters: '',
             synopsis: '',
+            alert: false
             
         }
         this.changeTitleHandler = this.changeTitleHandler.bind(this);
@@ -36,20 +37,39 @@ class CreateBookComponent extends Component {
                     author : book.author,
                     characters: book.characters,
                     synopsis: book.synopsis
-                });
+                });                
             });
+            this.state.alert = false;
         }        
     }
     saveOrUpdateBook = (e) => {
         e.preventDefault();
-        let book = {name: this.state.name, description: this.state.description, author: this.state.author};
+        let book = {
+            title: this.state.title, 
+            date: this.state.date, 
+            author: this.state.author, 
+            genres: this.state.genres, 
+            characters: this.state.characters, 
+            synopsis: this.state.synopsis            
+        };
         console.log('book => ' + JSON.stringify(book));
 
         // step 5
         if(this.state.id === '_add'){
             BookService.createBook(book).then(res =>{
                 this.props.history.push('/books');
-            });
+            }).catch ((error) => {
+                console.log("Error: " + error.response.data.message)
+                this.setState({title: book.title,
+                    date: book.date,
+                    genres: book.genres,
+                    author : book.author,
+                    characters: book.characters,
+                    synopsis: book.synopsis,
+                    errorMessage: error.response.data.message
+                });
+                this.state.alert = true;
+              });
         }else{
             BookService.updateBook(book, this.state.id).then( res => {
                 this.props.history.push('/books');
@@ -58,27 +78,27 @@ class CreateBookComponent extends Component {
     }
     
     changeTitleHandler= (event) => {
-        this.setState({name: event.target.value});
+        this.setState({title: event.target.value});
     }
 
     changeAuthorHandler= (event) => {
-        this.setState({description: event.target.value});
-    }
-
-    changeDateHandler= (event) => {
         this.setState({author: event.target.value});
     }
 
+    changeDateHandler= (event) => {
+        this.setState({date: event.target.value});
+    }
+
     changeGenresHandler= (event) => {
-        this.setState({description: event.target.value});
+        this.setState({genres: event.target.value});
     }
 
     changeCharacterHandler= (event) => {
-        this.setState({description: event.target.value});
+        this.setState({characters: event.target.value});
     }
 
     changeSynopsisHandler= (event) => {
-        this.setState({description: event.target.value});
+        this.setState({synopsis: event.target.value});
     }
 
     cancel(){
@@ -96,20 +116,27 @@ class CreateBookComponent extends Component {
                                 <div className = "card-body">
                                     <form>
                                         <div className = "form-group">
-                                            <label> Name: </label>
+                                       
+                                            <div className = "form-group" class="alert alert-danger" role="alert" >
+                                            Alert! {this.state.errorMessage}
+                                            </div> 
+                                                                                       
+                                        </div>     
+                                        <div className = "form-group">
+                                            <label> Title: </label>
                                             <input placeholder="Title" name="title" className="form-control" 
                                                 value={this.state.title} onChange={this.changeTitleHandler}/>
                                         </div>
                                         <div className = "form-group">
-                                            <label> Date: </label>
-                                            <input placeholder="Date" name="date" className="form-control" 
-                                                value={this.state.description} onChange={this.changeAuthorHandler}/>
-                                        </div>
-                                        <div className = "form-group">
                                             <label> Author: </label>
                                             <input placeholder="Author" name="author" className="form-control" 
-                                                value={this.state.author} onChange={this.changeDateHandler}/>
+                                                value={this.state.author} onChange={this.changeAuthorHandler}/>
                                         </div>
+                                        <div className = "form-group">
+                                            <label> Date: </label>
+                                            <input placeholder="Date" name="date" className="form-control" 
+                                                value={this.state.date} onChange={this.changeDateHandler}/>
+                                        </div>                                       
                                         <div className = "form-group">
                                             <label> Genres: </label>
                                             <input placeholder="Genres" name="genres" className="form-control" 
@@ -127,6 +154,7 @@ class CreateBookComponent extends Component {
                                         </div>
                                         <button className="btn btn-success" onClick={this.saveOrUpdateBook}>Save</button>
                                         <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
+                                                                  
                                     </form>
                                 </div>
                             </div>

@@ -37,7 +37,7 @@ public class Book {
 	private String synopsis;
 
 	@NotNull(message = "'date' cannot be null")
-	@Size(min=10, max=10, message = "'date' has to be of 10 characters and in format mm/dd/yyyy")
+	@Size(min=8, max=10, message = "'date' has to be of 10 characters and in format mm/dd/yyyy")
 	@Column(name = "date")
 	private String date;
 
