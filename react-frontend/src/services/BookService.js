@@ -7,19 +7,19 @@ class BookService {
   FINAL_URL = BOOK_API_BASE_URL;
   getBooks(searchSelection, searchText, page, outputFormat) {
     console.log("searchSelection: " + searchSelection);
-    console.log("searchText: " + searchText);
-    console.log("page: " + page);
+    console.log("searchText: " + searchText);    
     console.log("outputFormat: " + outputFormat);
     console.log(typeof (searchSelection) !== 'undefined');
-    if (page === 'undefined') {
+    if (typeof (page) === 'undefined' || Number.isNaN(page)) {
       page = 0;
     }
+    console.log("page: " + page);
     if (typeof (searchSelection) !== 'undefined' && typeof (searchText) !== 'undefined') {
-      FINAL_URL = BOOK_API_BASE_URL + "?size=25&page=0&" + searchSelection + "=" + searchText
+      FINAL_URL = BOOK_API_BASE_URL + "?size=25&page="+ page + "&" + searchSelection + "=" + searchText
     } else {
-      FINAL_URL = BOOK_API_BASE_URL + "?size=25&page=0"
+      FINAL_URL = BOOK_API_BASE_URL + "?size=25&page=" + page
     }
-    if (outputFormat === "json" || outputFormat === 'undefined') {
+    if (outputFormat === "json" || typeof(outputFormat) === 'undefined') {
       return axios.get(FINAL_URL, {
         headers: {
           'Output-Format': 'application/json'

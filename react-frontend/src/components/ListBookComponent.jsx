@@ -37,94 +37,113 @@ class ListBookComponent extends Component {
     this.props.history.push(`/update-book/${id}`);
   }
 
+  clickPrevious() {
+    if(this.state.page === 'undefined' || this.state.page < 0) {      
+      this.state.page = 0
+    }  else {
+      this.state.page = this.state.page - 1
+    }
+    this.searchBook()
+  }
+
+  clickNext() {  
+    if(this.state.page === 'undefined' || this.state.page < 0) {      
+      this.state.page = 0
+    } else {
+      this.state.page = this.state.page + 1
+    }  
+    this.searchBook()    
+  }
+
   componentDidMount() {
     BookService.getBooks(null, null, 0, this.state.outputFormat).then((res) => {
       console.log("Res data componetDidmOunt 1: " + res.data);
       this.setState({
         books: res.data.content,
-        pageSize: 10,
-        booksToBeShown: [],
-        pageArray: [],
+        page: 0
+        // pageSize: 10,
+        // booksToBeShown: [],
+        // pageArray: [],
       });
-      this.calculatePaginationDetails(1);
+      // this.calculatePaginationDetails(1);
     });
-    this.calculatePaginationDetails(1);
+    // this.calculatePaginationDetails(1);
   }
 
   // Pagination Implementation
-  calculatePaginationDetails = (page) => {
-    console.log("Page: " + page);
-    let books = this.state.books;
-    let total = books.length;
-    let pages = Math.floor(books.length / this.state.pageSize + 1);
-    let firstPage = 1;
-    let lastPage = pages;
-    let pageArray = [];
-    let booksToBeShown = [];
-    let currentPage = 1;
-    if (page === 'undefined') {
-      currentPage = 1;
-    } else if (page.toString().toLowerCase().indexOf("previous") > 0) {
-      currentPage = this.state.currentPage - 1;
-      if (currentPage < 1) {
-        currentPage = 1;
-      }
-    } else if (page.toString().toLowerCase().indexOf("next") > 0) {
-      currentPage = this.state.currentPage + 1;
-      if (currentPage > pages) {
-        currentPage = pages;
-      }
-    } else if (page.toString().toLowerCase().indexOf("first") > 0) {
-      currentPage = 1;
-    } else if (page.toString().toLowerCase().indexOf("last") > 0) {
-      currentPage = pages;
-    } else {
-      currentPage = parseInt(page);
-    }
-    console.log(parseInt(page));
-    console.log(currentPage);
-    for (let i = currentPage; i <= currentPage + 4; i++) {
-      if (i <= pages) pageArray.push(i);
-    }
-    let currentItemIndex = (currentPage - 1) * this.state.pageSize;
-    for (
-      let i = currentItemIndex;
-      i < currentItemIndex + 10 && i <= total - 1;
-      i++
-    ) {
-      booksToBeShown.push(books[i]);
-    }
-    let updatedState = {
-      booksToBeShown: booksToBeShown,
-      pageArray: pageArray,
-      firstPage: firstPage,
-      lastPage: lastPage,
-      currentPage: currentPage,
-    };
-    console.log(updatedState);
-    this.setState({
-      booksToBeShown: booksToBeShown,
-      pageArray: pageArray,
-      firstPage: firstPage,
-      lastPage: lastPage,
-      currentPage: currentPage,
-    });
-  };
+  // calculatePaginationDetails = (page) => {
+  //   console.log("Page: " + page);
+  //   let books = this.state.books;
+  //   let total = books.length;
+  //   let pages = Math.floor(books.length / this.state.pageSize + 1);
+  //   let firstPage = 1;
+  //   let lastPage = pages;
+  //   let pageArray = [];
+  //   let booksToBeShown = [];
+  //   let currentPage = 1;
+  //   if (page === 'undefined') {
+  //     currentPage = 1;
+  //   } else if (page.toString().toLowerCase().indexOf("previous") > 0) {
+  //     currentPage = this.state.currentPage - 1;
+  //     if (currentPage < 1) {
+  //       currentPage = 1;
+  //     }
+  //   } else if (page.toString().toLowerCase().indexOf("next") > 0) {
+  //     currentPage = this.state.currentPage + 1;
+  //     if (currentPage > pages) {
+  //       currentPage = pages;
+  //     }
+  //   } else if (page.toString().toLowerCase().indexOf("first") > 0) {
+  //     currentPage = 1;
+  //   } else if (page.toString().toLowerCase().indexOf("last") > 0) {
+  //     currentPage = pages;
+  //   } else {
+  //     currentPage = parseInt(page);
+  //   }
+  //   console.log(parseInt(page));
+  //   console.log(currentPage);
+  //   for (let i = currentPage; i <= currentPage + 4; i++) {
+  //     if (i <= pages) pageArray.push(i);
+  //   }
+  //   let currentItemIndex = (currentPage - 1) * this.state.pageSize;
+  //   for (
+  //     let i = currentItemIndex;
+  //     i < currentItemIndex + 10 && i <= total - 1;
+  //     i++
+  //   ) {
+  //     booksToBeShown.push(books[i]);
+  //   }
+  //   let updatedState = {
+  //     booksToBeShown: booksToBeShown,
+  //     pageArray: pageArray,
+  //     firstPage: firstPage,
+  //     lastPage: lastPage,
+  //     currentPage: currentPage,
+  //   };
+  //   console.log(updatedState);
+  //   this.setState({
+  //     booksToBeShown: booksToBeShown,
+  //     pageArray: pageArray,
+  //     firstPage: firstPage,
+  //     lastPage: lastPage,
+  //     currentPage: currentPage,
+  //   });
+  // };
 
   // Handle Pagination
-  handlePagination = (e) => {
-    e.preventDefault();
-    console.log("Target Text: " + e.target.text);
-    if (e.target.text !== 'undefined') {
-      this.calculatePaginationDetails(e.target.text);
-    } else {
-      this.calculatePaginationDetails(1);
-    }
-  };
+  // handlePagination = (e) => {
+  //   e.preventDefault();
+  //   console.log("Target Text: " + e.target.text);
+  //   if (e.target.text !== 'undefined') {
+  //     this.calculatePaginationDetails(e.target.text);
+  //   } else {
+  //     this.calculatePaginationDetails(1);
+  //   }
+  // };
 
   searchBook() {
-    console.log("searchSelection: " + this.state.searchSelection);
-    if (this.state.page === 'undefined') { this.state.page = 0 }
+    console.log("Page # in searchBook: " + this.state.page);
+    if (this.state.page === 'undefined' || this.state.page < 0) { this.state.page = 0 }
     BookService.getBooks(
       this.state.searchSelection,
       this.state.searchText,
@@ -137,7 +156,7 @@ class ListBookComponent extends Component {
         var parser = new xml2js.Parser();
         let finalData = [];
         parser.parseString(res.data, function (err, printData) {
-          console.log("Res data componetDidmOunt 2: " + JSON.stringify(printData['PageImpl'].content[0].content));
+          // console.log("Res data componetDidmOunt 2: " + JSON.stringify(printData['PageImpl'].content[0].content));
           if (printData['PageImpl'].content[0] === 'undefined') {
             finalData = [];
           } else {
@@ -151,24 +170,16 @@ class ListBookComponent extends Component {
           pageArray: [],
         });
       } else if (this.state.outputFormat === 'csv') {
-        let finalData = [];
-        console.log("Res:" + res.data);
+        // console.log("Res:" + res.data);
         csvtojson()
           .fromString(res.data)
           .then((jsonObj) => {
-            console.log("JSON: " + JSON.stringify(jsonObj));
+            // console.log("JSON: " + JSON.stringify(jsonObj));
             this.setState({ books: jsonObj });
           })
           .catch((error) => {
             console.error('Error converting CSV to JSON:', error);
           });
-        // csvOutput.then(result => {
-        //   console.log("CSVOutput: " + result.data);
-        //   // const jsonArray = csvtojson().fromFile(result.data);
-        //   // console.log("JSONOutput: " + jsonArray);          
-
-        // });
-
       }
     });
   }
@@ -239,6 +250,7 @@ class ListBookComponent extends Component {
           </div>
 
           <br></br>
+
           <div className="row">
             <div className="input-group mb-3">
               <div>
@@ -274,7 +286,7 @@ class ListBookComponent extends Component {
               <input
                 placeholder="Search"
                 id="searchText"
-                className="form-control"
+                className="form-control"                
                 value={this.state.searchText}
                 onChange={this.searchTextChanged}
               />
@@ -283,14 +295,22 @@ class ListBookComponent extends Component {
                 className="btn btn-primary"
                 onClick={() => this.searchBook()}
               >
-
                 Search
               </button>
               &nbsp;&nbsp;&nbsp;
             </div>
-          </div>
-          <div style={{ marginLeft: "340px" }}>
-            <Pagination>
+          </div>  
+          <div className="row">
+            <div className="input-group mb-3">
+          <button className="btn btn-primary" style={{ marginLeft: "230px" }} onClick={() => this.clickPrevious(this.state.page)}>
+              Prev
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button className="btn btn-primary" style={{ marginLeft: "1px" }} onClick={() => this.clickNext(this.state.page)}>
+              Next
+            </button>
+            <br></br>
+            {/* <Pagination>
               <Pagination.First onClick={(e) => this.handlePagination(e)} />
               <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
               {this.state.pageArray &&
@@ -308,8 +328,9 @@ class ListBookComponent extends Component {
               &nbsp;&nbsp;&nbsp;
               <Pagination.Next onClick={(e) => this.handlePagination(e)} />
               <Pagination.Last onClick={(e) => this.handlePagination(e)} />
-            </Pagination>
-          </div>
+            </Pagination> */}
+            </div>
+          </div>        
           <div className="row">
             <table className="table table-striped table-bordered">
               <thead>
@@ -474,18 +495,17 @@ class ListBookComponent extends Component {
               &nbsp;&nbsp;&nbsp;
             </div>
           </div>
-          {/* <div>
-            <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
+          <div className="row">
+            <div className="input-group mb-3">
+          <button className="btn btn-primary" style={{ marginLeft: "230px" }} onClick={() => this.clickPrevious(this.state.page)}>
               Prev
             </button>
-            <input className="btn" type="text" placeholder="1 - 50" />
-            <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button className="btn btn-primary" style={{ marginLeft: "1px" }} onClick={() => this.clickNext(this.state.page)}>
               Next
             </button>
-          </div> */}
-
-          {/* <div style={{ marginLeft: "340px" }}>
-            <Pagination>
+            <br></br>
+            {/* <Pagination>
               <Pagination.First onClick={(e) => this.handlePagination(e)} />
               <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
               {this.state.pageArray &&
@@ -499,10 +519,13 @@ class ListBookComponent extends Component {
                     {item}
                   </Pagination.Item>
                 ))}
+
+              &nbsp;&nbsp;&nbsp;
               <Pagination.Next onClick={(e) => this.handlePagination(e)} />
               <Pagination.Last onClick={(e) => this.handlePagination(e)} />
-            </Pagination>
-          </div>               */}
+            </Pagination> */}
+            </div>
+          </div>             
           <div className="row">
             <table className="table table-striped table-bordered">
               <thead>
@@ -666,35 +689,18 @@ class ListBookComponent extends Component {
               &nbsp;&nbsp;&nbsp;
             </div>
           </div>
-          {/* <div>
-            <button className="btn btn-primary" style={{ marginLeft: "230px" }}>
+          <div className="row">
+            <div className="input-group mb-3">
+          <button className="btn btn-primary" style={{ marginLeft: "230px" }} onClick={() => this.clickPrevious(this.state.page)}>
               Prev
             </button>
-            <input className="btn" type="text" placeholder="1 - 50" />
-            <button className="btn btn-primary" style={{ marginLeft: "1px" }}>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button className="btn btn-primary" style={{ marginLeft: "1px" }} onClick={() => this.clickNext(this.state.page)}>
               Next
             </button>
-          </div> */}
-
-          {/* <div style={{ marginLeft: "340px" }}>
-            <Pagination>
-              <Pagination.First onClick={(e) => this.handlePagination(e)} />
-              <Pagination.Prev onClick={(e) => this.handlePagination(e)} />
-              {this.state.pageArray &&
-                this.state.pageArray.length &&
-                this.state.pageArray.map((item) => (
-                  <Pagination.Item
-                    key={item}
-                    onClick={(e) => this.handlePagination(e)}
-                    active={this.state.currentPage === item}
-                  >
-                    {item}
-                  </Pagination.Item>
-                ))}
-              <Pagination.Next onClick={(e) => this.handlePagination(e)} />
-              <Pagination.Last onClick={(e) => this.handlePagination(e)} />
-            </Pagination>
-          </div>               */}
+            <br></br>            
+            </div>
+          </div> 
           <div className="row">
             <table className="table table-striped table-bordered">
               <thead>

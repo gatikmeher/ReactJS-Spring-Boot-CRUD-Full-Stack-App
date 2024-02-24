@@ -58,6 +58,7 @@ public class BookController {
         HttpHeaders header = new HttpHeaders();
         response.reset();
         System.out.println("Output-Format: " + acceptType);
+        System.out.println("Page: " + page);
         if (acceptType != null) {
             switch (acceptType) {
                 case MediaType.APPLICATION_JSON_VALUE:
@@ -75,8 +76,8 @@ public class BookController {
             }
         }
         header.setAccessControlAllowOrigin("*");
-        page = null == page ? 0 : page;
-        size = null == size ? 25 : size;
+        page = (null == page || page < 0) ? 0 : page;
+        size = (null == size || size < 25) ? 25 : size;
         Pageable pageable = PageRequest.of(page.intValue(), size.intValue());
         if (StringUtils.isNotEmpty(acceptType) && acceptType.equals(MediaType.TEXT_PLAIN_VALUE)) {
             StringBuilder csvContent = new StringBuilder();
