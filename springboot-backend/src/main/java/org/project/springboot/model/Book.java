@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -39,6 +40,7 @@ public class Book {
 	@NotNull(message = "'date' cannot be null")
 	@Size(min=8, max=10, message = "'date' has to be of 10 characters and in format mm/dd/yyyy")
 	@Column(name = "date")
+	@Pattern(regexp = "^(0?[1-9]|1[0-2])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})$", message = "Incorrect date format. Please use mm/dd/yyyy")
 	private String date;
 
 	@NotNull(message = "'genres' cannot be null")

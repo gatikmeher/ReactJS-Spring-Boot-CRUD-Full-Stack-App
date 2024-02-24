@@ -14,7 +14,7 @@ class CreateBookComponent extends Component {
             genres: '',
             characters: '',
             synopsis: '',
-            alert: false
+            alert: 'none'
             
         }
         this.changeTitleHandler = this.changeTitleHandler.bind(this);
@@ -24,24 +24,27 @@ class CreateBookComponent extends Component {
 
     // step 3
     componentDidMount(){
-
+        console.log("Alert: " + this.state.alert)
         // step 4
         if(this.state.id === '_add'){
+            this.state.alert = 'none';
             return
-        }else{
+        } else {
             BookService.getBookById(this.state.id).then( (res) =>{
-                let book = res.data;
+                let book = res.data;                
                 this.setState({title: book.title,
                     date: book.date,
                     genres: book.genres,
                     author : book.author,
                     characters: book.characters,
-                    synopsis: book.synopsis
+                    synopsis: book.synopsis,
+                    alert: 'none'
                 });                
-            });
-            this.state.alert = false;
+            });            
         }        
+        
     }
+
     saveOrUpdateBook = (e) => {
         e.preventDefault();
         let book = {
@@ -66,11 +69,11 @@ class CreateBookComponent extends Component {
                     author : book.author,
                     characters: book.characters,
                     synopsis: book.synopsis,
-                    errorMessage: error.response.data.message
+                    errorMessage: error.response.data.message,
+                    alert: ''
                 });
-                this.state.alert = true;
               });
-        }else{
+        } else {
             BookService.updateBook(book, this.state.id).then( res => {
                 this.props.history.push('/books');
             });
@@ -115,13 +118,7 @@ class CreateBookComponent extends Component {
                             <div className = "card col-md-12 offset-md-12 offset-md-12">                               
                                 <div className = "card-body">
                                     <form>
-                                        <div className = "form-group">
-                                       
-                                            <div className = "form-group" class="alert alert-danger" role="alert" >
-                                            Alert! {this.state.errorMessage}
-                                            </div> 
-                                                                                       
-                                        </div>     
+                                            
                                         <div className = "form-group">
                                             <label> Title: </label>
                                             <input placeholder="Title" name="title" className="form-control" 
@@ -152,9 +149,16 @@ class CreateBookComponent extends Component {
                                             <input placeholder="Synopsis" name="synopsis" className="form-control" 
                                                 value={this.state.synopsis} onChange={this.changeSynopsisHandler}/>
                                         </div>
+                                        
+                                        <div className = "form-group">
+                                            <div style={{ display: this.state.alert}}>
+                                                <div className="alert alert-danger" role="alert" >
+                                                Alert! {this.state.errorMessage}</div>
+                                        </div>
                                         <button className="btn btn-success" onClick={this.saveOrUpdateBook}>Save</button>
                                         <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
-                                                                  
+
+                                        </div>               
                                     </form>
                                 </div>
                             </div>
@@ -162,7 +166,7 @@ class CreateBookComponent extends Component {
 
                    </div>
             </div>
-        )
+        );
     }
 }
 

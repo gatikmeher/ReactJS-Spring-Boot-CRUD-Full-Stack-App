@@ -13,6 +13,7 @@ class UpdateBookComponent extends Component {
             genres: '',
             characters: '',
             synopsis: '',
+            alert: 'none'
         }
         this.changeTitleHandler = this.changeTitleHandler.bind(this);
         this.changeAuthorHandler = this.changeAuthorHandler.bind(this);
@@ -28,7 +29,8 @@ class UpdateBookComponent extends Component {
                 genres: book.genres,
                 author : book.author,
                 characters: book.characters,
-                synopsis: book.synopsis
+                synopsis: book.synopsis,
+                alert: 'none'
             });
         });
     }
@@ -48,7 +50,8 @@ class UpdateBookComponent extends Component {
                 author : book.author,
                 characters: book.characters,
                 synopsis: book.synopsis,
-                errorMessage: error.message
+                errorMessage: error.response.data.message,
+                alert: ''
             });
         });
     }
@@ -92,13 +95,7 @@ class UpdateBookComponent extends Component {
                             <div className = "card col-md-6 offset-md-3 offset-md-3">
                                 <h3 className="text-center">Update Book</h3>
                                 <div className = "card-body">
-                                    <form>
-                                    <div className = "form-group">                                       
-                                       <div className = "form-group" class="alert alert-danger" role="alert" >
-                                       Alert! {this.state.errorMessage}
-                                       </div> 
-                                                                                  
-                                   </div>  
+                                    <form>                                    
                                     <div className = "form-group">
                                             <label> Name: </label>
                                             <input placeholder="Title" name="title" className="form-control" 
@@ -129,7 +126,12 @@ class UpdateBookComponent extends Component {
                                             <textarea placeholder="Synopsis" name="synopsis" className="form-control" 
                                                 value={this.state.synopsis} onChange={this.changeSynopsisHandler} />
                                         </div>
-
+                                        <div className = "form-group">
+                                            <div style={{ display: this.state.alert}}>
+                                                <div className="alert alert-danger" role="alert" >
+                                                Alert! {this.state.errorMessage}</div>
+                                            </div>
+                                        </div>
                                         <button className="btn btn-success" onClick={this.updateBook}>Save</button>
                                         <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
                                         

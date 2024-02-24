@@ -116,7 +116,7 @@ public class BookController {
     // update book rest api
 
     @PutMapping("/books/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @Valid @RequestBody Book bookDetails) {
         bookValidator.checkInputValue(bookDetails.getTitle(), bookDetails.getAuthor(), bookDetails.getDate(),
                 bookDetails.getGenres(), bookDetails.getCharacters(), bookDetails.getSynopsis());
         Book updatedBook = bookService.updateBook(id, bookDetails);
