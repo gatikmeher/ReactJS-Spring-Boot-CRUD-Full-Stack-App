@@ -19,7 +19,7 @@ public class BookServiceImpl implements BookService {
     @Autowired
     BookRepository bookRepository;
 
-
+    // find all books from DB with search criteria of title date and genres. It includes pagination
     @Override
     public Page<Book> findAllBook(String title, String date, String genres, Pageable pageable) {
         if(pageable == null) {
@@ -31,11 +31,13 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findByTitleContainingOrDateContainingOrGenresContaining(title, date, genres, pageable);
     }
 
+    // save the noe book into DB
     @Override
     public Book saveBook(Book book) {
         return bookRepository.save(book);
     }
 
+    // Update an existing book in DB
     @Override
     public Book updateBook(Long id, Book book) {
         Book findBook = bookRepository.findById(id)
@@ -52,6 +54,7 @@ public class BookServiceImpl implements BookService {
         return updatedBook;
     }
 
+    // find a book from DB by ID
     @Override
     public Book findBookById(Long id) {
         Book book = bookRepository.findById(id)
@@ -59,6 +62,8 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+
+    // delete a book from DB based on id
     @Override
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)

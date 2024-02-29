@@ -13,6 +13,7 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
+    // find book containgin title, genres and Date
     Page<Book> findByTitleContainingOrDateContainingOrGenresContaining(String title, String date, String genres, Pageable pageable);
 
 }

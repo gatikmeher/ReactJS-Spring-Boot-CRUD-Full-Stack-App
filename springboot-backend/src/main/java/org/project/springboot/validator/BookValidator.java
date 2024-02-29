@@ -14,6 +14,7 @@ import static java.util.regex.Pattern.matches;
 @Component
 public class BookValidator {
 
+    // function type for SQL injection
     private static final String SQL_TYPES =
             "TABLE, TABLESPACE, PROCEDURE, FUNCTION, TRIGGER, KEY, VIEW, MATERIALIZED VIEW, LIBRARY" +
                     "DATABASE LINK, DBLINK, INDEX, CONSTRAINT, TRIGGER, USER, SCHEMA, DATABASE, PLUGGABLE DATABASE, BUCKET, " +
@@ -21,6 +22,7 @@ public class BookValidator {
                     "SEQUENCE, RESTORE POINT, PFILE, CLASS, CURSOR, OBJECT, RULE, USER, DATASET, DATASTORE, " +
                     "COLUMN, FIELD, OPERATOR";
 
+    // regex for SQL injections
     private static final String[] SQL_REGEXPS = {
             "(?i)(.*)(\\b)+(OR|AND)(\\s)+(true|false)(\\s)*(.*)",
             "(?i)(.*)(\\b)+(OR|AND)(\\s)+(\\w)(\\s)*(\\=)(\\s)*(\\w)(\\s)*(.*)",
@@ -54,6 +56,7 @@ public class BookValidator {
 
     private static final List<Pattern> validationPatterns = buildPatterns(SQL_REGEXPS);
 
+    // Validate the input value
     public void checkInputValue(String title, String author, String date, String genres, String characters, String synopsis) {
         if(!isSqlInjectionSafe(title) || !isSqlInjectionSafe(author) || !isSqlInjectionSafe(date) || !isSqlInjectionSafe(genres) ||
                 !isSqlInjectionSafe(characters) || !isSqlInjectionSafe(synopsis)) {
@@ -61,6 +64,7 @@ public class BookValidator {
         }
     }
 
+    // Check for SQL injection
     private boolean isSqlInjectionSafe(String dataString){
         for(Pattern pattern : validationPatterns){
             if(matches(String.valueOf(pattern), dataString)){
@@ -70,31 +74,39 @@ public class BookValidator {
         return true;
     }
 
+    // Check for title
     private boolean checkTitle(String title) {
         return true;
     }
 
+    // Check for author
     private boolean checkAuthor(String author) {
         return true;
     }
 
+    // Check for date range
     private boolean checkDate(String date) {
         String dateRegEx="^[0-3]{1}[0-9]{1}/[0-1]{1}[1-2]{1}/[1-9]{1}[0-9]{3}$";
         return matches(dateRegEx, date);
     }
 
+    // Check for genres
     private boolean checkGenres(String genres) {
         return true;
     }
 
+    // Check for characters
     private boolean checkCharacters(String characters) {
         return true;
     }
 
+    // Check for synopsis
     private boolean checkSynopsis(String synopsis) {
         return true;
     }
 
+
+    // Check for patterns
     private static List<Pattern> buildPatterns(String[] expressionStrings){
         List<Pattern> patterns = new ArrayList<Pattern>();
         for(String expression : expressionStrings){
